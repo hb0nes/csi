@@ -1,0 +1,25 @@
+{
+  "name": "csi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hb0nes/csi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hb0nes/csi/issues"
+  },
+  "homepage": "https://github.com/hb0nes/csi#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "hapi": "^17.6.0",
+    "mysql2": "^1.6.1",
+    "sequelize": "^4.39.0"
+  }
+}
