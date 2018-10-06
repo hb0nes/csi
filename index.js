@@ -74,7 +74,7 @@ const Message = sequelize.define('message', {
             method: 'GET',
             path: '/',
             handler: (req, h) => {
-                return `This is an API. You can reach it on :${server.info.uri}/api/v1/`;
+                return `This is an API. You can reach it on ${server.info.uri}/api/v1/`;
             }
         },
         {
