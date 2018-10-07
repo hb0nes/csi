@@ -1,6 +1,5 @@
 //bcrypt voor hashen/opslaan wachtwoorden
 var bcrypt = require('bcrypt-nodejs')
-
 // Models
 let db = require('../../models')
 

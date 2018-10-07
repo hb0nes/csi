@@ -7,8 +7,6 @@ let db = require('../../models')
 // Environment Variables
 require('dotenv').config();
 
-
-
 module.exports = [
     // Iedereen mag inloggen
     {
