@@ -1,10 +1,10 @@
 // Hapi voor...Hapiness.
 const Hapi = require('hapi');
-const db = require('./models')
-var routes = require('./routes');
-
 // Environment variabelen
 require('dotenv').config();
+
+const db = require('./models')
+const routes = require('./routes');
 
 // Credential validatiefunctie
 const validate = async function (decoded, request) {
@@ -29,7 +29,6 @@ const validate = async function (decoded, request) {
     }
     // FOREIGN_KEY_CHECKS=0, anders kan hij tabellen niet weggooien
     await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
-
     // Maak de tabellen aan en drop ze als ze nog niet bestaan
     await db.User.sync({ force: true });
     db.Message.sync({ force: true });
@@ -39,7 +38,7 @@ const validate = async function (decoded, request) {
         port: 3000,
         host: '127.0.0.1'
     })
-
+    // Registreer JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));
     // Definieer strategie
     server.auth.strategy('jwt', 'jwt',

@@ -3,21 +3,14 @@ module.exports = (sequelize, Sequelize) => {
         sender: {
             type: Sequelize.INTEGER,
             allowNull: false
-            // references: {
-            //     model: User,
-            //     key: 'id'
-            // }
         },
         receiver: {
             type: Sequelize.INTEGER,
             allowNull: false
-            // references: {
-            //     model: User,
-            //     key: 'id'
-            // }
         },
         content: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         time: {
             type: Sequelize.DATE

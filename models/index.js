@@ -3,9 +3,6 @@ var path      = require('path');
 var Sequelize = require('sequelize');
 var basename  = path.basename(__filename);
 var db        = {};
-
-// Environment variabelen
-require('dotenv').config({path: 'X:/.env'});
 var sequelize = new Sequelize(process.env.DB);
 
 fs
