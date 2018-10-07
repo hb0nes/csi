@@ -113,7 +113,7 @@ const validate = async function (decoded, request) {
             path: '/',
             config: { auth: false },
             handler: (req, h) => {
-                return 'This is an API. You can reach it on :8080/api/v1/';
+                return `This is an API. You can reach it on ${server.info.uri}/api/v1/`;
             }
         },
         {
