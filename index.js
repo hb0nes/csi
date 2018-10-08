@@ -2,7 +2,8 @@
 const Hapi = require('hapi');
 // Environment variabelen
 require('dotenv').config();
-
+const path = require('path');
+const fs = require('fs');
 const db = require('./models')
 const routes = require('./routes');
 
@@ -35,6 +36,10 @@ const validate = async function (decoded, request) {
 
     // HAPI server
     const server = Hapi.server({
+        tls: {
+            key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
+            cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
+        },
         port: 3000,
         host: '127.0.0.1'
     })
