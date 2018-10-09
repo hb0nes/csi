@@ -37,11 +37,11 @@ const validate = async function (decoded, request) {
     // HAPI server
     const server = Hapi.server({
         tls: {
-            key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
-            cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
+             key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
+             cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
         },
         port: 3000,
-        host: '127.0.0.1'
+        host: '0.0.0.0'
     })
     // Registreer JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));
