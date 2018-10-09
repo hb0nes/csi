@@ -3,22 +3,34 @@ module.exports = (sequelize, Sequelize) => {
         username: {
             type: Sequelize.STRING(40),
             allowNull: false,
-            unique: true
+            unique: true,
+            validate: {
+                is: ["^[a-z0-9_-]+$", 'i']
+            }
         },
         password: {
             type: Sequelize.STRING,
             allowNull: false
         },
         firstName: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            validate: {
+                isAlpha: true
+            }
         },
         lastName: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            validate: {
+                isAlpha: true
+            }
         },
         emailAddress: {
             type: Sequelize.STRING(50),
             allowNull: false,
-            unique: true
+            unique: true,
+            validate: {
+                isEmail: true
+            }
         },
         admin: {
             type: Sequelize.BOOLEAN,

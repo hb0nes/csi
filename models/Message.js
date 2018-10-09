@@ -1,19 +1,32 @@
 module.exports = (sequelize, Sequelize) => {
     const Message = sequelize.define('Message', {
+        indexes: [
+            {
+                fields: ['sender'],
+                name: 'Sender'
+            },
+            {
+                fields: ['receiver'],
+                name: 'Receiver'
+            }
+        ],
         sender: {
             type: Sequelize.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isInt: true
+            }        
         },
         receiver: {
             type: Sequelize.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isInt: true
+            }
         },
         content: {
             type: Sequelize.STRING,
             allowNull: false
-        },
-        time: {
-            type: Sequelize.DATE
         }
     });
 
