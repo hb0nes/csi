@@ -42,8 +42,8 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     User.associate = (models) => {
-        models.User.hasMany(models.Message, { foreignKey: 'sender', targetKey: 'sender', sourceKey: 'username' });
-        models.User.hasMany(models.Message, { foreignKey: 'receiver', targetKey: 'receiver', sourceKey: 'username' });
+        models.User.hasMany(models.Message, { foreignKey: 'fk_sender', targetKey: 'sender', sourceKey: 'username' });
+        models.User.hasMany(models.Message, { foreignKey: 'fk_receiver', targetKey: 'receiver', sourceKey: 'username' });
     };
     return User;
 }

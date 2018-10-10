@@ -26,8 +26,8 @@ module.exports = (sequelize, Sequelize) => {
         });
 
     Message.associate = (models) => {
-        models.Message.belongsTo(models.User, { foreignKey: 'sender', sourceKey: 'sender', targetKey: 'username' });
-        models.Message.belongsTo(models.User, { foreignKey: 'receiver', sourceKey: 'receiver', targetKey: 'username' });
+        models.Message.belongsTo(models.User, { foreignKey: 'fk_sender', sourceKey: 'sender', targetKey: 'username' });
+        models.Message.belongsTo(models.User, { foreignKey: 'fk_receiver', sourceKey: 'receiver', targetKey: 'username' });
     }
     return Message;
 };
