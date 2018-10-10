@@ -1,46 +1,51 @@
 //bcrypt voor hashen/opslaan wachtwoorden
-var bcrypt = require('bcrypt-nodejs')
+const Bcrypt = require('bcrypt-nodejs')
 // Models
-let db = require('../../models')
+const Db = require('../../models')
+// JOI (input validation)
+const Joi = require('joi');
+
+// Validatieschema
+const schema = Joi.object().keys({
+    "username": Joi.string().min(2).max(40).alphanum().required(),
+    "password": Joi.string().min(8).required(),
+    "firstName": Joi.string().min(2).regex(/^[a-zA-Z]+$/).required(),
+    "lastName": Joi.string().min(2).regex(/^[a-zA-Z]+$/).required(),
+    "email": Joi.string().email().min(8).max(50).required()
+});
 
 module.exports = [
     // Iedereen mag een gebruiker aanmaken
     {
         method: 'POST',
-        path: '/api/v1/createUser',
+        path: '/api/v1/user/create',
         config: { auth: false },
         handler: async (req, h) => {
             try {
-                // Haal credentials uit de payload
-                let payload = req.payload;
-                console.log(payload)
-                let username = payload.username;
-                let password = payload.password;
-                let firstName = payload.firstName;
-                let lastName = payload.lastName;
-                let email = payload.email;
-                let admin = false;
-                if (!username || !password || !email) {
-                    return h.response('Missing a parameter.').code(400);
+                // Validate against schema
+                const result = Joi.validate(req.payload, schema);
+                if (result.error) {
+                    return h.response(result.error.toString()).code(422);
                 }
 
                 // Check for admin-rights
+                let admin = false;
                 let admins = ["b0nes", "budroid", "epicfail"];
-                if (admins.indexOf(username.toLowerCase()) !== -1) {
+                if (admins.indexOf(req.payload.username.toLowerCase()) !== -1) {
                     admin = true;
                 }
 
-                // Hash wachtwoord en sla gebruiker op in de DB
-                let hash = bcrypt.hashSync(password);
-                await db.User.create({
-                    username: username,
-                    password: hash,
-                    firstName: firstName,
-                    lastName: lastName,
-                    emailAddress: email,
-                    admin: admin
+                // Hash pwd and save in DB
+                let hash = Bcrypt.hashSync(req.payload.password);
+                await Db.User.create({
+                    "username": req.payload.username,
+                    "password": hash,
+                    "firstName": req.payload.firstName,
+                    "lastName": req.payload.lastName,
+                    "emailAddress": req.payload.email,
+                    "admin": req.payload.admin
                 })
-                return h.response(`Username: ${username} created succesfully.`).code(201);
+                return h.response(`Username: ${req.payload.username} created succesfully.`).code(201);
             }
             catch (err) {
                 return h.response(`Creating user failed. ${err}`).code(500);
