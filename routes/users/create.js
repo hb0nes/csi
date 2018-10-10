@@ -1,11 +1,13 @@
-//bcrypt voor hashen/opslaan wachtwoorden
+//bcrypt for saving pwds
 const Bcrypt = require('bcrypt-nodejs')
 // Models
 const Db = require('../../models')
 // JOI (input validation)
 const Joi = require('joi');
+// Boom for errors
+const Boom = require('boom');
 
-// Validatieschema
+// Validation schema
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum().required(),
     "password": Joi.string().min(8).required(),
@@ -15,8 +17,8 @@ const schema = Joi.object().keys({
 });
 
 module.exports = [
-    // Iedereen mag een gebruiker aanmaken
     {
+
         method: 'POST',
         path: '/api/v1/user/create',
         config: { auth: false },
@@ -25,13 +27,13 @@ module.exports = [
                 // Validate against schema
                 const result = Joi.validate(req.payload, schema);
                 if (result.error) {
-                    return h.response(result.error.toString()).code(422);
+                    return Boom.badRequest(result.error.toString());
                 }
 
                 // Check for admin-rights
                 let admin = false;
                 let admins = ["b0nes", "budroid", "epicfail"];
-                if (admins.indexOf(req.payload.username.toLowerCase()) !== -1) {
+                if (admins.indexOf(req.payload.username.toLowerCase().trim()) !== -1) {
                     admin = true;
                 }
 
@@ -42,13 +44,13 @@ module.exports = [
                     "password": hash,
                     "firstName": req.payload.firstName,
                     "lastName": req.payload.lastName,
-                    "emailAddress": req.payload.email,
-                    "admin": req.payload.admin
+                    "email": req.payload.email,
+                    "admin": admin
                 })
                 return h.response(`Username: ${req.payload.username} created succesfully.`).code(201);
             }
             catch (err) {
-                return h.response(`Creating user failed. ${err}`).code(500);
+                return Boom.badImplementation(`Creating user failed. ${err}`);
             }
         }
     }

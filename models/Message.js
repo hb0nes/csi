@@ -1,18 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
     const Message = sequelize.define('Message', {
         sender: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            validate: {
-                isInt: true
-            }
+            type: Sequelize.STRING,
+            allowNull: false
         },
         receiver: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            validate: {
-                isInt: true
-            }
+            type: Sequelize.STRING,
+            allowNull: false
         },
         content: {
             type: Sequelize.STRING,
@@ -32,8 +26,8 @@ module.exports = (sequelize, Sequelize) => {
         });
 
     Message.associate = (models) => {
-        models.Message.belongsTo(models.User, { foreignKey: 'sender', sourceKey: 'sender' });
-        models.Message.belongsTo(models.User, { foreignKey: 'receiver', sourceKey: 'receiver' });
+        models.Message.belongsTo(models.User, { foreignKey: 'sender', sourceKey: 'sender', targetKey: 'username' });
+        models.Message.belongsTo(models.User, { foreignKey: 'receiver', sourceKey: 'receiver', targetKey: 'username' });
     }
     return Message;
 };

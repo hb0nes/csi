@@ -1,15 +1,17 @@
-// bcrypt voor hashen/opslaan wachtwoorden
-var Bcrypt = require('bcrypt-nodejs')
-// Json web token voor authenticatie
-let Jwt = require('jsonwebtoken');
+// bcrypt for saving passwords
+const Bcrypt = require('bcrypt-nodejs')
+// Json web token for authentication
+const Jwt = require('jsonwebtoken');
 // Models
-let Db = require('../../models')
+const Db = require('../../models')
 // Validation
 const Joi = require('joi');
+// Boom for errors
+const Boom = require('boom');
 // Environment Variables
 require('dotenv').config();
 
-// Validatieschema
+// Validation schema
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum(),
     "password": Joi.string().min(8).required(),
@@ -17,7 +19,7 @@ const schema = Joi.object().keys({
 });
 
 module.exports = [
-    // Iedereen mag inloggen
+    // Anyone with an account can login. Either with username or email (and of course a password)
     {
         method: 'POST',
         path: '/api/v1/user/login',
@@ -29,29 +31,31 @@ module.exports = [
             // Validate
             const result = Joi.validate(req.payload, schema);
             if (result.error || (!req.payload.username && !req.payload.email) || !req.payload.password) {
-                return h.response(`Login failed. Invalid credentials.`).code(401);
+                return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
 
-            // Kijk of er een gebruiker is met een opgegeven username of email
-            // Op is een Sequelize functie om operators te gebruiken zoals 'or', in dit geval
+            // Check if there is a user with the given name or email
             let Op = Db.Sequelize.Op;
             let user = await Db.User.findOne({
                 where: {
-                    [Op.or]: [{ "username": req.payload.username }, { "emailAddress": req.payload.email }]
+                    [Op.or]: [{ "username": req.payload.username }, { "email": req.payload.email }]
                 }
             })
-            // Gebruik Bcrypt om het opgegeven wachtwoord te vergelijken met die in de database
+            if (!user) {
+                return Boom.badRequest(`Login failed. Invalid credentials.`);
+            }
+
+            // Compare passwords
             if (Bcrypt.compareSync(req.payload.password, user.password)) {
-                // Als de admin flag true is in de database, dan heeft hij of zij toegang tot de admin scope
                 if (user.admin) {
                     scope.push('admin');
                 }
-                // Maak een token met de juiste id, username en scope, die verloopt in 15 min en geef hem terug aan de gebruiker
+                // Create token and return it
                 let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "15m" });
-                return h.response(`Authentication Token: ${token}`).code(200);
+                return h.response(token).code(200);
             }
             else {
-                return h.response(`Login failed. Invalid credentials.`).code(401);
+                return Boom.badImplementation(`Login failed. Invalid credentials.`);
             }
         }
     }
