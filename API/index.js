@@ -1,7 +1,7 @@
 // Hapi voor...Hapiness.
 const Hapi = require('hapi');
 // Environment variabelen
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + "/.env" });
 const path = require('path');
 const fs = require('fs');
 const db = require('./models')
