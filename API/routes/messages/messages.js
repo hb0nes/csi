@@ -3,30 +3,40 @@ let db = require('../../models')
 // Json web token voor authenticatie
 let jwt = require('jsonwebtoken');
 
+const schema = Joi.object().keys({
+    "sender": Joi.string().min(2).max(40).alphanum().required(),
+    "receiver": Joi.string().min(2).max(40).alphanum().required(),
+    "content": Joi.string().min(1).required(),
+});
+
 module.exports = [
     {
         method: 'POST',
         path: '/api/v1/message/create',
-        /*config: {
+        config: {
             auth: {
                 strategy: 'jwt',
                 scope: 'user'
             }
-        },*/
-        config: { auth: false },
+        },
         handler: async (req, h) => {
             try {
+                // Validate against schema
+                const result = Joi.validate(req.payload, schema);
+                if (result.error) {
+                    return Boom.badRequest(result.error.toString());
+                }
+
                 await db.Message.create({
                     sender: req.payload.sender,
                     receiver: req.payload.receiver,
                     content: req.payload.content,
-                })
-                if (!req.payload.content) {
-                    return h.response('Post failed: Fill the required fields');
-                }
-                else {
-                    return h.response('Message posted succesfully');
-                }
+                });
+
+                // if (!req.payload.content) {
+                //     return h.response('Post failed: Fill the required fields');
+                // }
+                return h.response('Message posted succesfully');
             }
             catch (err) {
                 return h.response(`${err}`);
@@ -34,7 +44,6 @@ module.exports = [
         }
     },
     {
-
         method: 'GET',
         path: '/api/v1/message/load',
         config: {
@@ -43,7 +52,6 @@ module.exports = [
                 scope: 'user'
             }
         },
-        //config: { auth: false },
         handler: async (request, h) => {
             try {
                 console.log(request.auth.credentials)

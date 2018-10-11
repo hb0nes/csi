@@ -62,5 +62,9 @@ echo "Getting user \"user2\" with field password, logged in as \"b0nes\" (admin)
 http GET https://localhost:3000/api/v1/user/user2/PasSwoRd Authorization:${ADMIN_TOKEN} --verify=no -b
 
 # Get a message 
-http GET https://localhost:3000/api/v1/message/load Authorization=$ADMIN_TOKEN --verify=no -b
+http GET https://localhost:3000/api/v1/message/load Authorization:$USER_TOKEN --verify=no -b
+# Get a message 
+http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content= --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla extraparameter=bullshit --verify=no -b 
 
