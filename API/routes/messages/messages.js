@@ -1,7 +1,9 @@
 // Models
 let db = require('../../models')
-// Json web token voor authenticatie
-let jwt = require('jsonwebtoken');
+// JOI (input validation)
+const Joi = require('joi');
+// Boom for errors
+const Boom = require('boom');
 
 const schema = Joi.object().keys({
     "sender": Joi.string().min(2).max(40).alphanum().required(),
