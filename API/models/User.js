@@ -9,18 +9,18 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         password: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(100),
             allowNull: false
         },
         firstName: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(40),
             allowNull: false,
             validate: {
                 isAlpha: true
             }
         },
         lastName: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(40),
             allowNull: false,
             validate: {
                 isAlpha: true
@@ -42,8 +42,8 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     User.associate = (models) => {
-        models.User.hasMany(models.Message, { foreignKey: 'fk_sender', targetKey: 'sender', sourceKey: 'username' });
-        models.User.hasMany(models.Message, { foreignKey: 'fk_receiver', targetKey: 'receiver', sourceKey: 'username' });
+        models.User.hasMany(models.Message, { foreignKey: 'sender', sourceKey: 'username' });
+        models.User.hasMany(models.Message, { foreignKey: 'receiver', sourceKey: 'username' });
     };
     return User;
 }

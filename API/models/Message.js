@@ -1,15 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
     const Message = sequelize.define('Message', {
         sender: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING(40),
+            allowNull: false,
         },
         receiver: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(40),
             allowNull: false
         },
         content: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(9999),
             allowNull: false
         }
     }, {
@@ -23,11 +23,12 @@ module.exports = (sequelize, Sequelize) => {
                     name: 'Receiver'
                 }
             ],
-        });
+        }
+    );
 
     Message.associate = (models) => {
-        models.Message.belongsTo(models.User, { foreignKey: 'fk_sender', sourceKey: 'sender', targetKey: 'username' });
-        models.Message.belongsTo(models.User, { foreignKey: 'fk_receiver', sourceKey: 'receiver', targetKey: 'username' });
+        models.Message.belongsTo(models.User, { foreignKey: 'sender', targetKey: 'username' });
+        models.Message.belongsTo(models.User, { foreignKey: 'receiver', targetKey: 'username' });
     }
     return Message;
 };
