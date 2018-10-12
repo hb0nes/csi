@@ -36,10 +36,10 @@ const validate = async function (decoded, request) {
 
     // HAPI server
     const server = Hapi.server({
-        tls: {
-             key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
-             cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
-        },
+        // tls: {
+        //      key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
+        //      cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
+        // },
         port: process.env.PORT || 3000,
         host: '0.0.0.0'
     })
