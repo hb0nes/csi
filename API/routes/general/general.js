@@ -5,7 +5,7 @@ module.exports = [
         path: '/',
         config: { auth: false },
         handler: (req, h) => {
-            return `This is an API. You can reach it on ${req.server.info.uri}/api/v1/`;
+            return `This is an API. It's running on Heroku!`;
         }
     }
 ]
