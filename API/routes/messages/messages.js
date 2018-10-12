@@ -4,6 +4,8 @@ let db = require('../../models')
 const Joi = require('joi');
 // Boom for errors
 const Boom = require('boom');
+// Logging
+const l = require('../../logger');
 
 const schema = Joi.object().keys({
     "sender": Joi.string().min(2).max(40).alphanum().required(),
@@ -41,6 +43,7 @@ module.exports = [
                 return h.response('Message posted succesfully');
             }
             catch (err) {
+                l.error(err);
                 return h.response(`${err}`);
             }
         }
@@ -56,7 +59,6 @@ module.exports = [
         },
         handler: async (request, h) => {
             try {
-                console.log(request.auth.credentials)
                 let user = request.auth.credentials.id;
                 let results = []
                 let Op = db.Sequelize.Op;
@@ -74,6 +76,7 @@ module.exports = [
                 return results;
 
             } catch (err) {
+                l.error(`Could not load messages. Error: ${err}`)
                 return h.response(`Could not load messages. Error: ${err}`)
             }
         }

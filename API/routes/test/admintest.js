@@ -10,6 +10,7 @@ module.exports = [
             }
         },
         handler: (req, h) => {
+            l.info('Admin access to /admintest granted.');
             return 'You accessed an admin route!';
         }
     }

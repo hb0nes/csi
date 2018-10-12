@@ -3,8 +3,7 @@ var path      = require('path');
 var Sequelize = require('sequelize');
 var basename  = path.basename(__filename);
 var db        = {};
-//var sequelize = new Sequelize(process.env.DB);
-var sequelize = new Sequelize(process.env.JAWSDB_MARIA_URL);
+var sequelize = new Sequelize(process.env.JAWSDB_MARIA_URL || process.env.DB);
 
 fs
   .readdirSync(__dirname)

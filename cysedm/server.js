@@ -21,7 +21,7 @@ const provision = async () => {
   
   // Server starten
   await server.start();
-  console.log('Server running at:', server.info.uri);
+  l.info('Server running at:', server.info.uri);
 };
 
 provision();

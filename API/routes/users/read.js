@@ -4,6 +4,8 @@ const Db = require('../../models');
 const Joi = require('joi');
 // Error messages
 const Boom = require('boom');
+// Logging
+const l = require('../../logger');
 
 module.exports = [
     {
@@ -42,6 +44,7 @@ module.exports = [
                 return h.response(result).code(200);
             }
             catch (err) {
+                l.error('User read failed.',err);
                 return Boom.badImplementation(`Getting user failed. ${err}`);
             }
         }

@@ -8,6 +8,8 @@ const Db = require('../../models')
 const Joi = require('joi');
 // Boom for errors
 const Boom = require('boom');
+// Logging
+const l = require('../../logger');
 // Environment Variables
 require('dotenv').config();
 
@@ -31,6 +33,7 @@ module.exports = [
             // Validate
             const result = Joi.validate(req.payload, schema);
             if (result.error || (!req.payload.username && !req.payload.email) || !req.payload.password) {
+                l.info(`Login attempt failed ${result.error || req.payload.username || req.payload.email}.`);
                 return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
 
@@ -42,6 +45,7 @@ module.exports = [
                 }
             })
             if (!user) {
+                l.info(`Login attempt failed for user ${req.payload.username || req.payload.email || 'nobody' }.`);
                 return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
 
@@ -52,9 +56,11 @@ module.exports = [
                 }
                 // Create token and return it
                 let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "15m" });
+                l.info(`User ${req.payload.username} has logged in succesfully.`);
                 return h.response(token).code(200);
             }
             else {
+                l.info(`Login attempt failed.`);
                 return Boom.badImplementation(`Login failed. Invalid credentials.`);
             }
         }

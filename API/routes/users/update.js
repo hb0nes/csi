@@ -6,6 +6,8 @@ const Joi = require('joi');
 const Boom = require('boom');
 //Bcrypt voor hashen/opslaan wachtwoorden
 const Bcrypt = require('bcrypt-nodejs')
+// Logging
+const l = require('../../logger');
 
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum(),
@@ -50,10 +52,11 @@ module.exports = [
                         username: req.params.username
                     }
                 })
-
+                l.info(`User ${req.params.username} updated succesfully.`);
                 return h.response(`User ${req.params.username} updated succesfully.`).code(202);
             }
             catch (err) {
+                l.error('Deleting a user has failed.',err);
                 return Boom.badImplementation(`Deleting user failed. ${err}`);
             }
         }

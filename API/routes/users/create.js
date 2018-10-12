@@ -6,6 +6,8 @@ const Db = require('../../models')
 const Joi = require('joi');
 // Boom for errors
 const Boom = require('boom');
+// Logging
+const l = require('../../logger');
 
 // Validation schema
 const schema = Joi.object().keys({
@@ -47,9 +49,11 @@ module.exports = [
                     "email": req.payload.email,
                     "admin": admin
                 })
+                l.info(`Username: ${req.payload.username} created succesfully.`);
                 return h.response(`Username: ${req.payload.username} created succesfully.`).code(201);
             }
             catch (err) {
+                l.error('Creating user failed.',err);
                 return Boom.badImplementation(`Creating user failed. ${err}`);
             }
         }
