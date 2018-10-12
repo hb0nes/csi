@@ -5,7 +5,7 @@ module.exports = [
         path: '/',
         config: { auth: false },
         handler: (req, h) => {
-            return `This is an API. It's running on Heroku!`;
+            return `This is an API. I just changed this and it automatically deployed after a push.`;
         }
     }
 ]
