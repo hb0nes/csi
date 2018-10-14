@@ -64,7 +64,17 @@ http GET https://localhost:3000/api/v1/user/user2/PasSwoRd Authorization:${ADMIN
 # Get a message 
 http GET https://localhost:3000/api/v1/message/load Authorization:$USER_TOKEN --verify=no -b
 # Get a message 
-http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla1 --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla2 --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla3 --verify=no -b 
+http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla4 --verify=no -b 
 http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content= --verify=no -b 
 http POST https://localhost:3000/api/v1/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla extraparameter=bullshit --verify=no -b 
+http DELETE https://localhost:3000/api/v1/message/delete/1 Authorization:$USER_TOKEN --verify=no
+http DELETE https://localhost:3000/api/v1/message/delete/7 Authorization:$USER_TOKEN --verify=no
+http DELETE https://localhost:3000/api/v1/message/delete/3 Authorization:$USER_TOKEN --verify=no
+http DELETE https://localhost:3000/api/v1/message/delete/3 Authorization:$ADMIN_TOKEN --verify=no
+http PUT https://localhost:3000/api/v1/message/update id=2 content=blabla Authorization:$USER_TOKEN --verify=no
+
+http GET https://localhost:3000/api/v1/message/read/b0nes Authorization:$USER_TOKEN --verify=no
 
