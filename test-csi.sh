@@ -66,10 +66,20 @@ http GET ${SERVER}/user/user2/firstName Authorization:${ADMIN_TOKEN}
 echo "Getting user \"user2\" with field password, logged in as \"b0nes\" (admin)"
 http GET ${SERVER}/user/user2/PasSwoRd Authorization:${ADMIN_TOKEN} 
 
-# Get a message 
-http GET ${SERVER}/message/load Authorization:$USER_TOKEN 
-# Get a message 
-http POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla  
-http POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=  
-http POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla extraparameter=bullshit  
+# Get a message
+http GET ${SERVER}/message/load Authorization:$USER_TOKEN --verify=no -b
+# Get a message
+http POST ${SERVER}/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla1 --verify=no -b
+http POST ${SERVER}/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla2 --verify=no -b
+http POST ${SERVER}/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla3 --verify=no -b
+http POST ${SERVER}/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla4 --verify=no -b
+http POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content= --verify=no -b
+http POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla extraparameter=bullshit --verify=no -b
+http DELETE ${SERVER}/message/delete/1 Authorization:$USER_TOKEN --verify=no
+http DELETE ${SERVER}/message/delete/7 Authorization:$USER_TOKEN --verify=no
+http DELETE ${SERVER}/message/delete/3 Authorization:$USER_TOKEN --verify=no
+http DELETE ${SERVER}/message/delete/3 Authorization:$ADMIN_TOKEN --verify=no
+http PUT ${SERVER}/message/update id=2 content=blabla Authorization:$USER_TOKEN --verify=no
+http PUT ${SERVER}/message/update id=2 content=blabla Authorization:$ADMIN_TOKEN --verify=no
 
+http GET ${SERVER}/message/read/b0nes Authorization:$USER_TOKEN --verify=no
