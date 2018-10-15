@@ -2,10 +2,9 @@
 const Hapi = require('hapi');
 // Environment variabelen
 require('dotenv').config({ path: __dirname + "/.env" });
-const path = require('path');
-const fs = require('fs');
 const db = require('./models')
 const routes = require('./routes');
+const l = require('./logger');
 
 // Credential validatiefunctie
 const validate = async function (decoded, request) {
@@ -23,10 +22,10 @@ const validate = async function (decoded, request) {
     // Authenticate Sequelize
     try {
         await db.sequelize.authenticate();
-        console.log('Succesfully authenticated.');
+        l.info("Successfully authenticated.");
     }
     catch (err) {
-        console.log('Failed authentication:', err)
+        l.error('Failed Authentication.', err);
     }
     // FOREIGN_KEY_CHECKS=0, anders kan hij tabellen niet weggooien
     await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
@@ -36,10 +35,6 @@ const validate = async function (decoded, request) {
 
     // HAPI server
     const server = Hapi.server({
-        // tls: {
-        //      key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
-        //      cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'), 'utf8')
-        // },
         port: process.env.PORT || 3000,
         host: '0.0.0.0'
     })
@@ -58,9 +53,9 @@ const validate = async function (decoded, request) {
     server.route(routes);
     await server.start();
     try {
-        console.log(`Server running at: ${server.info.uri}`);
+        l.info(`Server running at: ${server.info.uri}`);
     }
     catch (err) {
-        console.log("Error:", err)
+        l.error("Error:", err)
     }
 })();

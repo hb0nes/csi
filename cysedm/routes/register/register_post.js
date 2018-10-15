@@ -8,7 +8,6 @@ module.exports = [
       handler: async function (req, h) {
         var msg;
         // Hieronder eventuele serverside validaties
-        console.log(req.payload);
         if (req.payload.password.toString() === req.payload.confirm_password.toString()) {
           // De user mag nu gepersisteerd worden
           // API van the Hermanator aanroepen
@@ -38,7 +37,6 @@ module.exports = [
           var status = "varken";
           await new Promise((resolve, reject) => {
             const postreq = https.request(post_options, (res) => {
-              console.log('Code: ' + res.statusCode);
               resolve(res.statusCode);
             })
             postreq.write(post_data);
@@ -48,19 +46,17 @@ module.exports = [
           });
 
           if (status === 201) {
-            console.log("Status 201");
             return h.view('redirect');
           } else {
             msg = "Fout opgetreden";
-            console.log(msg);
+            l.error(msg);
           }
           //return reply.response("gelukt").code(200);
 
 
         } else {
           // Wachtwoorden komen niet overeen. Foutmelding terugsturen.
-          msg = "De opgegeven wachtwoorden komen NIET overeen";
-          console.log(msg);
+          msg = "The passwords do not match.";
           return h.view('register', {
             errMsg: msg
           });

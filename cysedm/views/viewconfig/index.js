@@ -2,7 +2,7 @@ const Path = require('path');
 const viewsPath = Path.resolve(__dirname, '..');
 const layoutPath = Path.resolve(viewsPath, 'layout')
 const Handlebars = require('handlebars');
-//console.log(viewsPath);
+
 module.exports = 
     {
         engines:{
