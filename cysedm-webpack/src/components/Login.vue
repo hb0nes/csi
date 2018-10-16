@@ -34,7 +34,7 @@
                     @blur="$v.password.$touch()"
                     ></v-text-field>
                   <v-alert v-model="loginErr" dismissible type="error" transition="scale-transition"> {{errMsg}} </v-alert>
-                  <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> {{loginMsg}} </v-alert>
+                  <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> Succesfully authenticated. </v-alert>
                   <v-btn :disabled="!valid" block color="primary" @click="login"> Login </v-btn>
                 </v-form>
               <v-btn dark block color="secondary"> Forgot password </v-btn>
@@ -107,10 +107,9 @@ export default {
           this.loginMsg = res.data;
         })
         .catch(err => {
-          this.errMsg = err.message;
           this.loginErr = true;
-          if (err.response) {
-            this.loginErr = err.response.data.message;
+          this.errMsg = err.message;
+          if (err.response.data) {
             this.errMsg = err.response.data.message;
           }
         });

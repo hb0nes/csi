@@ -61,7 +61,7 @@ module.exports = [
             }
             else {
                 l.info(`Login attempt failed.`);
-                return Boom.badImplementation(`Login failed. Invalid credentials.`);
+                return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
         }
     }
