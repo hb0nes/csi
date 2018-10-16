@@ -36,7 +36,8 @@ const validate = async function (decoded, request) {
     // HAPI server
     const server = Hapi.server({
         port: process.env.PORT || 3000,
-        host: '0.0.0.0'
+        host: '0.0.0.0',
+        routes: { cors:true }
     })
     // Registreer JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));

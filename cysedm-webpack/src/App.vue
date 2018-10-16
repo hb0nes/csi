@@ -6,19 +6,17 @@
 </template>
 
 <script>
-import Toolbar from './components/Toolbar';
-import Login from './components/Login';
+import Toolbar from "./components/Toolbar";
+import Login from "./components/Login";
 
 export default {
   name: "CyseDM",
   components: {
-    'Toolbar': Toolbar,
-    'Login': Login
+    Toolbar: Toolbar,
+    Login: Login
   },
   data() {
-    return {
-      
-    };
+    return {};
   }
 };
 </script>
