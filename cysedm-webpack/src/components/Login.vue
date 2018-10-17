@@ -56,10 +56,8 @@ import {
   minLength,
   alphaNum
 } from "vuelidate/lib/validators";
-import { validationMixin } from "vuelidate";
 
 export default {
-  mixins: [validationMixin],
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
     password: { required, minLength: minLength(8) }
