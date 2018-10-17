@@ -45,6 +45,7 @@
           <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p>
           <p> {{debug}} </p>
       </v-container>
+      <v-link href="/register">Sign up</v-link>
     </v-content>
   </v-app>
 </template>
@@ -58,6 +59,7 @@ import {
 } from "vuelidate/lib/validators";
 
 export default {
+  name: 'Login',
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
     password: { required, minLength: minLength(8) }

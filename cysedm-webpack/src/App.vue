@@ -1,19 +1,20 @@
 <template>
   <v-app>
     <Toolbar/>
-    <Login/>
+    <router-view />
   </v-app>
 </template>
 
 <script>
 import Toolbar from "./components/Toolbar";
-import Login from "./components/Login";
+import router from './router'
 
 export default {
+  router,
   name: "CyseDM",
   components: {
     Toolbar: Toolbar,
-    Login: Login
+    //Routerview: router
   },
   data() {
     return {};
