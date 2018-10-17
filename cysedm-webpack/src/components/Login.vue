@@ -11,7 +11,7 @@
                 
               </v-toolbar>
               <v-card-text>
-                <v-form ref="form" v-model="valid" lazy-validation>
+                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && login()">
                   <v-text-field
                     v-model="username"
                     :error-messages="usernameErrors"
@@ -100,6 +100,7 @@ export default {
           username: this.username,
           password: this.password
         },
+        withCredentials: true,
         url: "http://127.0.0.1:3000/api/v1/user/login"
       })
         .then(res => {

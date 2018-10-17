@@ -32,13 +32,28 @@ const validate = async function (decoded, request) {
     // Maak de tabellen aan en drop ze als ze nog niet bestaan
     await db.User.sync({ force: true });
     db.Message.sync({ force: true });
-
+    
     // HAPI server
     const server = Hapi.server({
         port: process.env.PORT || 3000,
         host: '0.0.0.0',
-        routes: { cors:true }
-    })
+        routes: { cors: {
+            origin: ['*'],
+            credentials: true
+        } }
+    });
+
+    // Cookie experiment
+    server.state('cysedm', {
+        ttl: 24 * 60 * 60 * 1000,
+        isSecure: false,
+        isHttpOnly: true,
+        isSameSite: false,
+        encoding: 'none',
+        path: '/',
+        clearInvalid: true, 
+        strictHeader: true 
+    });
     // Registreer JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));
     // Definieer strategie

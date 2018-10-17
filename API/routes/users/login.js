@@ -57,6 +57,7 @@ module.exports = [
                 // Create token and return it
                 let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "15m" });
                 l.info(`User ${req.payload.username} has logged in succesfully.`);
+                h.state('cysedm', token);
                 return h.response(token).code(200);
             }
             else {
