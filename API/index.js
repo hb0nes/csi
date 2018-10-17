@@ -44,11 +44,12 @@ const validate = async function (decoded, request) {
     });
 
     // Cookie experiment
-    server.state('cysedm', {
-        ttl: 24 * 60 * 60 * 1000,
+    server.state('token', {
+        ttl: 15 * 60 * 1000,
         isSecure: false,
         isHttpOnly: true,
-        isSameSite: false,
+        // isSameSite: false,
+        isSameSite: 'Strict',
         encoding: 'none',
         path: '/',
         clearInvalid: true, 

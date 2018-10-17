@@ -37,12 +37,13 @@
                   <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> Succesfully authenticated. </v-alert>
                   <v-btn :disabled="!valid" block color="primary" @click="login"> Login </v-btn>
                 </v-form>
-              <v-btn dark block color="secondary"> Forgot password </v-btn>
+              <v-btn dark block color="secondary" @click="admintest"> Forgot password </v-btn>
               </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
           <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p>
+          <p> {{debug}} </p>
       </v-container>
     </v-content>
   </v-app>
@@ -67,10 +68,11 @@ export default {
     valid: true,
     username: "",
     password: "",
-    loginRes: "",
+    loginRes: false,
     loginMsg: "",
-    loginErr: "",
-    errMsg: ""
+    loginErr: false,
+    errMsg: "",
+    debug: ""
   }),
   computed: {
     usernameErrors() {
@@ -101,7 +103,7 @@ export default {
           password: this.password
         },
         withCredentials: true,
-        url: "http://127.0.0.1:3000/api/v1/user/login"
+        url: "http://localhost:3000/api/v1/user/login"
       })
         .then(res => {
           this.loginRes = true;
@@ -113,6 +115,19 @@ export default {
           if (err.response.data) {
             this.errMsg = err.response.data.message;
           }
+        });
+    },
+    admintest() {
+      this.axios({
+        method: "get",
+        withCredentials: true,
+        url: "http://localhost:3000/api/v1/admintest"
+      })
+        .then(res => {
+          this.debug = res.data;
+        })
+        .catch(err => {
+          this.debug = err;
         });
     }
   }
