@@ -44,6 +44,7 @@
         </v-layout>
           <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p>
       </v-container>
+      <v-link href="/register">Sign up</v-link>
     </v-content>
   </v-app>
 </template>
@@ -58,6 +59,7 @@ import {
 import { validationMixin } from "vuelidate";
 
 export default {
+  name: 'Login',
   mixins: [validationMixin],
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
