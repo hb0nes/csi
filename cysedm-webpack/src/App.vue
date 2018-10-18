@@ -13,7 +13,7 @@ export default {
   router,
   name: "CyseDM",
   components: {
-    Toolbar: Toolbar,
+    Toolbar: Toolbar
     //Routerview: router
   },
   data() {
