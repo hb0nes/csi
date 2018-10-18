@@ -101,6 +101,11 @@ import {
   email
 } from "vuelidate/lib/validators";
 
+const isValidName = naam => {
+  // Robert-Jan Buddenbömer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
+  return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(naam);  
+};
+
 export default {
   name: "Register",
   data: () => ({
@@ -119,8 +124,8 @@ export default {
   }),
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
-    firstname: { required, maxLength: maxLength(40), alpha },
-    lastname: { required, maxLength: maxLength(40), alpha },
+    firstname: { required, isValidName, maxLength: maxLength(40), alpha },
+    lastname: { required, isValidName, maxLength: maxLength(40), alpha },
     email: { required, email },
     password: { required, minLength: minLength(8), alphaNum },
     confirmpassword: { required, sameAsPassword: sameAs("password") }
@@ -142,8 +147,8 @@ export default {
       !this.$v.firstname.maxLength &&
         errors.push("Name must be at most 40 characters long");
       !this.$v.firstname.required && errors.push("Firstname is required.");
-      !this.$v.firstname.alpha &&
-        errors.push("Username can only contain letters, '-', and '''.");
+      !this.$v.firstname.isValidName &&
+        errors.push("Firstname contains illegal characters");
       return errors;
     },
     // TODO Possible duplicate code. Maybe same function as above, with field as param
@@ -153,8 +158,8 @@ export default {
       !this.$v.lastname.maxLength &&
         errors.push("Name must be at most 40 characters long");
       !this.$v.lastname.required && errors.push("Lastname is required.");
-      !this.$v.lastname.alpha &&
-        errors.push("Username can only contain letters, '-', and '''.");
+      !this.$v.lastname.isValidName &&
+        errors.push("Lastname contains illegal characters");
       return errors;
     },
     emailErrors() {
