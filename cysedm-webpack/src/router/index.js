@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '@/components/Login'
 import register from '@/components/Register'
 import forgot from '@/components/Forgot'
+import redirect from '@/components/Redirect'
 
 Vue.use(Router)
 
@@ -22,7 +23,13 @@ export default new Router({
       path: '/forgot',
       name: 'forgot',
       component: forgot
+    },
+    {
+      path: '/redirect',
+      name: 'redirect',
+      component: redirect
     }
+
 
   ]
 })

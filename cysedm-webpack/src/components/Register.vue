@@ -100,10 +100,13 @@ import {
   alpha,
   email
 } from "vuelidate/lib/validators";
+import router from "../router";
 
 const isValidName = naam => {
   // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
-  return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(naam);  
+  return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(
+    naam
+  );
 };
 
 export default {
@@ -204,6 +207,9 @@ export default {
         .then(res => {
           this.regRes = true;
           this.regMsg = res.data;
+          const naam = this.firstname;
+          // Redirecten
+          router.push({ name: "redirect", params: { naam: naam } });
         })
         .catch(err => {
           this.regErr = true;
