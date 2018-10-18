@@ -33,6 +33,29 @@ module.exports = [
                     return Boom.badRequest(result.error.toString());
                 }
 
+                // Check if username already exists in DB
+                let usernameExists = await Db.User.findOne({
+                    attributes: { exclude: ["password"] },
+                    where: {
+                        username: req.payload.username
+                    }
+                })
+                if (usernameExists != null) {
+
+                    return Boom.badRequest('Username is already in use');
+                }
+                // Same for email
+                let emailExists = await Db.User.findOne({
+                    attributes: { exclude: ["password"] },
+                    where: {
+                        email: req.payload.email
+                    }
+                })
+                if (emailExists != null) {
+                    // Verbeter vooral die gekke Engelse meldingen van me. LoL. Anders wordt J. Watson boos...
+                    return Boom.badRequest('There is already an account using this email address');
+                }
+
                 // Check for admin-rights
                 let admin = false;
                 let admins = ["b0nes", "budroid", "epicfail"];
@@ -54,8 +77,10 @@ module.exports = [
                 return h.response(`Username: ${req.payload.username} created succesfully.`).code(201);
             }
             catch (err) {
-                l.error('Creating user failed.',err);
-                return Boom.badImplementation(`Creating user failed. ${err}`);
+                l.error('Creating user failed.', err);
+                // Waar is dat boom nou precies voor? T geeft geen shit door...
+                //return Boom.badImplementation(`Creating user failed. ${err}`);
+                return h.response(err.message).code(err.code);
             }
         }
     }

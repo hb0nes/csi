@@ -77,7 +77,7 @@
                     @input="$v.confirmpassword.$touch()"
                     @blur="$v.confirmpassword.$touch()"
                     ></v-text-field>
-                  <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}} {}</v-alert>
+                  <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}}</v-alert>
                   <v-alert v-model="regRes" dismissible type="success" transition="scale-transition"> Succesfully registered. </v-alert>
                   <v-btn :disabled="!valid" block color="primary" @click="register"> Register </v-btn>
                 </v-form>
@@ -208,12 +208,12 @@ export default {
           this.regRes = true;
           this.regMsg = res.data;
           const naam = this.firstname;
-          // Redirecten
+          // Redirect
           router.push({ name: "redirect", params: { naam: naam } });
         })
         .catch(err => {
           this.regErr = true;
-          this.errMsg = err.message;
+          this.errMsg = err.message.toString();
           if (err.response.data) {
             this.errMsg = err.response.data.message;
           }
