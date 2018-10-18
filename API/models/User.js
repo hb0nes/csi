@@ -1,3 +1,5 @@
+const validName = ["^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$", 'i'];
+
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define('User', {
         username: {
@@ -16,14 +18,14 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(40),
             allowNull: false,
             validate: {
-                isAlpha: true
+                is: validName
             }
         },
         lastName: {
             type: Sequelize.STRING(40),
             allowNull: false,
             validate: {
-                isAlpha: true
+                is: validName
             }
         },
         email: {
