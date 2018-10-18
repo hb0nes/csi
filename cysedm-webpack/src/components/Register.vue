@@ -11,8 +11,8 @@
                 
               </v-toolbar>
               <v-card-text>
-                <v-form ref="form" v-model="valid" lazy-validation>
-                  <v-text-field
+               <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && register()">
+                 <v-text-field
                     v-model="username"
                     :error-messages="usernameErrors"
                     prepend-icon="person" 
@@ -102,7 +102,7 @@ import {
 } from "vuelidate/lib/validators";
 
 const isValidName = naam => {
-  // Robert-Jan Buddenbömer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
+  // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
   return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(naam);  
 };
 
