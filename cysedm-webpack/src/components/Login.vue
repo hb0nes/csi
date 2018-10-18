@@ -16,7 +16,7 @@
                     v-model="username"
                     :error-messages="usernameErrors"
                     prepend-icon="person" 
-                    label="Login"
+                    label="Username or email"
                     type="text"
                     required
                     @input="$v.username.$touch()"
@@ -37,15 +37,15 @@
                   <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> Succesfully authenticated. </v-alert>
                   <v-btn :disabled="!valid" block color="primary" @click="login"> Login </v-btn>
                 </v-form>
-              <v-btn dark block color="secondary" @click="admintest"> Forgot password </v-btn>
+              <v-btn dark block color="secondary" to="/forgot"> Forgot password </v-btn>
+              <v-btn block outline color="primary" to="/register"> Oh no! Still not chatting secure? </v-btn>
               </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
-          <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p>
+          <!-- <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p> -->
           <p> {{debug}} </p>
       </v-container>
-      <v-link href="/register">Sign up</v-link>
     </v-content>
   </v-app>
 </template>
