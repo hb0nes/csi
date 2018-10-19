@@ -10,11 +10,12 @@ const Boom = require('boom');
 const l = require('../../logger');
 
 // Validation schema
+const regExName = /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum().required(),
     "password": Joi.string().min(8).required(),
-    "firstName": Joi.string().min(2).regex(/^[a-zA-Z]+$/).required(),
-    "lastName": Joi.string().min(2).regex(/^[a-zA-Z]+$/).required(),
+    "firstName": Joi.string().min(2).regex(regExName).required(),
+    "lastName": Joi.string().min(2).regex(regExName).required(),
     "email": Joi.string().email().min(8).max(50).required()
 });
 

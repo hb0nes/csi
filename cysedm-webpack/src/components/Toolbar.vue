@@ -29,18 +29,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import store from '@/store';
 
 export default {
-  data: () => ({
-    menu: false,
-    actions: [
-      { 
-        title: 'Logout', 
-        action: function () { store.commit("users/logout")}
-      }
-    ]
-  }),
+  data() {
+    return {
+      actions: [
+        {
+          title: "Logout",
+          action: () => {
+            this.$store.commit("users/logout");
+          }
+        }
+      ]
+    };
+  },
   computed: {
     ...mapGetters("users", ["isLoggedIn", "currentUser"])
   }

@@ -16,7 +16,7 @@
                     v-model="username"
                     :error-messages="usernameErrors"
                     prepend-icon="person" 
-                    label="Login"
+                    label="Username/Email"
                     type="text"
                     required
                     @input="$v.username.$touch()"
@@ -45,6 +45,8 @@
                   Login 
                   </v-btn>
                 </v-form>
+              <v-btn dark block color="secondary" to="/forgot"> Forgot password </v-btn>
+              <v-btn block outline color="primary" to="/register"> Register </v-btn>
               </v-card-text>
             </v-card>
           </v-flex>
