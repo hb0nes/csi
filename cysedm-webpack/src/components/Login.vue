@@ -11,16 +11,16 @@
                 
               </v-toolbar>
               <v-card-text>
-                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && login()">
+                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && logIn()">
                   <v-text-field
-                    v-model="username"
-                    :error-messages="usernameErrors"
+                    v-model="login"
+                    :error-messages="loginErrors"
                     prepend-icon="person" 
-                    label="Username/Email"
+                    label="Username or Email"
                     type="text"
                     required
-                    @input="$v.username.$touch()"
-                    @blur="$v.username.$touch()"
+                    @input="$v.login.$touch()"
+                    @blur="$v.login.$touch()"
                     ></v-text-field>
                   
                   <v-text-field
@@ -40,7 +40,7 @@
                   :disabled="!valid || loading"
                   block 
                   color="primary" 
-                  @click="login"
+                  @click="logIn"
                   > 
                   Login 
                   </v-btn>
@@ -57,24 +57,19 @@
 </template>
 
 <script>
-import {
-  required,
-  maxLength,
-  minLength,
-  alphaNum
-} from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "Login",
   validations: {
-    username: { required, maxLength: maxLength(12), alphaNum },
-    password: { required, minLength: minLength(8) }
+    login: { required },
+    password: { required }
   },
   data: () => ({
     loader: null,
     loading: false,
     valid: true,
-    username: "",
+    login: "",
     password: "",
     loginRes: false,
     loginMsg: "",
@@ -83,33 +78,27 @@ export default {
     debug: ""
   }),
   computed: {
-    usernameErrors() {
+    loginErrors() {
       let errors = [];
-      if (!this.$v.username.$dirty) return errors;
-      !this.$v.username.maxLength &&
-        errors.push("Name must be at most 12 characters long");
-      !this.$v.username.required && errors.push("Name is required.");
-      !this.$v.username.alphaNum &&
-        errors.push("Username must be alphanumeric.");
+      if (!this.$v.login.$dirty) return errors;
+      !this.$v.login.required && errors.push("Login is required.");
       return errors;
     },
     passwordErrors() {
       let errors = [];
       if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.minLength &&
-        errors.push("Password must be at least 8 characters long");
       !this.$v.password.required && errors.push("Password is required.");
       return errors;
     }
   },
   methods: {
-    login() {
+    logIn() {
       this.loader = 'loading';
       this.$store.commit("users/auth_request");
       this.axios({
         method: "post",
         data: {
-          username: this.username,
+          login: this.login,
           password: this.password
         },
         withCredentials: true,

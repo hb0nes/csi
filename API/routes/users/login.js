@@ -15,9 +15,8 @@ require('dotenv').config();
 
 // Validation schema
 const schema = Joi.object().keys({
-    "username": Joi.string().min(2).max(40).alphanum(),
+    "login": Joi.alternatives().try(Joi.string().min(2).max(40).alphanum(), Joi.string().email().min(4).max(50)),
     "password": Joi.string().min(8).required(),
-    "email": Joi.string().email().min(8).max(50)
 });
 
 module.exports = [
@@ -29,11 +28,11 @@ module.exports = [
         handler: async (req, h) => {
             // Default scope
             let scope = ['user'];
-
             // Validate
             const result = Joi.validate(req.payload, schema);
-            if (result.error || (!req.payload.username && !req.payload.email) || !req.payload.password) {
-                l.info(`Login attempt failed ${result.error || req.payload.username || req.payload.email}.`);
+            if (result.error || !req.payload.login || !req.payload.password) {
+                console.log("validation failed");
+                l.info(`Login attempt failed ${result.error || req.payload.login}.`);
                 return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
 
@@ -41,11 +40,11 @@ module.exports = [
             let Op = Db.Sequelize.Op;
             let user = await Db.User.findOne({
                 where: {
-                    [Op.or]: [{ "username": req.payload.username }, { "email": req.payload.email }]
+                    [Op.or]: [{ "username": req.payload.login }, { "email": req.payload.login }]
                 }
             })
             if (!user) {
-                l.info(`Login attempt failed for user ${req.payload.username || req.payload.email || 'nobody' }.`);
+                l.info(`Login attempt failed for user ${req.payload.login || 'nobody' }.`);
                 return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
 
@@ -56,10 +55,10 @@ module.exports = [
                 }
                 // Create token and return it
                 let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "15m" });
-                l.info(`User ${req.payload.username} has logged in succesfully.`);
+                l.info(`User ${user.username} has logged in succesfully.`);
                 h.state('token', token);
                 let loggedIn = {
-                    'username': req.payload.username,
+                    'username': user.username,
                     'scope': scope
                 }
                 return h.response(loggedIn).header('Authorization', token).code(200);

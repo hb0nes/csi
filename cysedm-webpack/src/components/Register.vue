@@ -8,7 +8,6 @@
               <v-toolbar dark color="primary">
                 <v-toolbar-title>Register</v-toolbar-title>
                 <v-spacer></v-spacer>
-                
               </v-toolbar>
               <v-card-text>
                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && register()">
@@ -102,7 +101,7 @@ import {
 } from "vuelidate/lib/validators";
 
 const isValidName = naam => {
-  // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
+  // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko and Jan Železný have to be able to register as well
   return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(naam);  
 };
 
@@ -146,7 +145,7 @@ export default {
       if (!this.$v.firstname.$dirty) return errors;
       !this.$v.firstname.maxLength &&
         errors.push("Name must be at most 40 characters long");
-      !this.$v.firstname.required && errors.push("Firstname is required.");
+      !this.$v.firstname.required && errors.push("First name is required.");
       !this.$v.firstname.isValidName &&
         errors.push("Firstname contains illegal characters");
       return errors;
@@ -157,7 +156,7 @@ export default {
       if (!this.$v.lastname.$dirty) return errors;
       !this.$v.lastname.maxLength &&
         errors.push("Name must be at most 40 characters long");
-      !this.$v.lastname.required && errors.push("Lastname is required.");
+      !this.$v.lastname.required && errors.push("Last name is required.");
       !this.$v.lastname.isValidName &&
         errors.push("Lastname contains illegal characters");
       return errors;
