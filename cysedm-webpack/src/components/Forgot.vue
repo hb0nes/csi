@@ -8,9 +8,9 @@
               <v-toolbar dark color="primary">
                 <v-toolbar-title>Forgot password?</v-toolbar-title>
                 <v-spacer></v-spacer>
-                Contact an administrator.
               </v-toolbar>
               <v-card-text>
+                Please contact an administrator.
               </v-card-text>
             </v-card>
           </v-flex>

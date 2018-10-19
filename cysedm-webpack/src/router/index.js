@@ -9,7 +9,15 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '*',
+      redirect: { name: 'login' }
+    },
+    {
       path: '/',
+      redirect: { name: 'login' }
+    },
+    {
+      path: '/login',
       name: 'login',
       component: login
     },
@@ -22,7 +30,6 @@ export default new Router({
       path: '/forgot',
       name: 'forgot',
       component: forgot
-    }
-
+    },
   ]
 })

@@ -1,7 +1,7 @@
 <template>
   <v-toolbar dark color="primary">
     <v-toolbar-side-icon></v-toolbar-side-icon>
-    <v-toolbar-title class="white--text">CyseDM</v-toolbar-title>
+    <router-link to="/"><v-toolbar-title class="white--text">CyseDM</v-toolbar-title></router-link>
     <v-spacer></v-spacer>
     <v-menu v-if="isLoggedIn" offset-y>
     <v-btn flat slot="activator">
@@ -18,12 +18,6 @@
       </v-list-tile>
     </v-list>
 </v-menu>
-    <v-btn icon>
-      <v-icon>search</v-icon>
-    </v-btn>
-    <v-btn icon>
-      <v-icon>more_vert</v-icon>
-    </v-btn>
   </v-toolbar>
 </template>
 

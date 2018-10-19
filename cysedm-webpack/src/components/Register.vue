@@ -6,11 +6,19 @@
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12 mt-5">
               <v-toolbar dark color="primary">
-                <v-toolbar-title>Register</v-toolbar-title>
+                <v-toolbar-title v-if="registered"> Welcome {{ username }}!</v-toolbar-title>
+                <v-toolbar-title v-else>Register</v-toolbar-title>
                 <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
-               <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && register()">
+                <div v-if="registered">
+                  <!-- <p class="text-xs-center title">Your account has been created successfully.</p> -->
+                  <v-alert class="mb-3" :value="true" color="success" icon="check_circle" outline>
+                    <span class="title"> Your account has been created successfully! </span>
+                  </v-alert>
+                  <v-btn block color="primary" to="/login"> Return to loginpage </v-btn>
+                </div>
+               <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && register()" v-else>
                  <v-text-field
                     v-model="username"
                     :error-messages="usernameErrors"
@@ -76,7 +84,7 @@
                     @input="$v.confirmpassword.$touch()"
                     @blur="$v.confirmpassword.$touch()"
                     ></v-text-field>
-                  <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}} {}</v-alert>
+                  <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}}</v-alert>
                   <v-alert v-model="regRes" dismissible type="success" transition="scale-transition"> Succesfully registered. </v-alert>
                   <v-btn :disabled="!valid" block color="primary" @click="register"> Register </v-btn>
                 </v-form>
@@ -99,10 +107,13 @@ import {
   alpha,
   email
 } from "vuelidate/lib/validators";
+// import router from "../router";
 
 const isValidName = naam => {
-  // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko and Jan Železný have to be able to register as well
-  return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(naam);  
+  // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
+  return /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/.test(
+    naam
+  );
 };
 
 export default {
@@ -119,7 +130,7 @@ export default {
     regMsg: "",
     regErr: false,
     errMsg: "",
-    debug: ""
+    registered: false
   }),
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
@@ -180,7 +191,7 @@ export default {
       let errors = [];
       if (!this.$v.confirmpassword.$dirty) return errors;
       !this.$v.confirmpassword.sameAsPassword &&
-        errors.push("Passwords must me identical");
+        errors.push("Passwords must be identical");
       !this.$v.confirmpassword.required &&
         errors.push("Confirming password is required.");
       return errors;
@@ -203,10 +214,11 @@ export default {
         .then(res => {
           this.regRes = true;
           this.regMsg = res.data;
+          this.registered = true;
         })
         .catch(err => {
           this.regErr = true;
-          this.errMsg = err.message;
+          this.errMsg = err.message.toString();
           if (err.response.data) {
             this.errMsg = err.response.data.message;
           }
