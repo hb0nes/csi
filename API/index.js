@@ -1,14 +1,14 @@
-// Hapi voor...Hapiness.
+// Hapi for...Hapiness.
 const Hapi = require('hapi');
-// Environment variabelen
+// Environment variables
 require('dotenv').config({ path: __dirname + "/.env" });
 const db = require('./models')
 const routes = require('./routes');
 const l = require('./logger');
 
-// Credential validatiefunctie
+// Credential validation
 const validate = async function (decoded, request) {
-    // Vind user met ID
+    // Find user by ID
     let user = await db.User.findOne({ where: { id: decoded.id } });
     if (user) {
         return { isValid: true };
@@ -27,9 +27,7 @@ const validate = async function (decoded, request) {
     catch (err) {
         l.error('Failed Authentication.', err);
     }
-    // FOREIGN_KEY_CHECKS=0, anders kan hij tabellen niet weggooien
     await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
-    // Maak de tabellen aan en drop ze als ze nog niet bestaan
     await db.User.sync({ force: true });
     db.Message.sync({ force: true });
     
@@ -43,9 +41,9 @@ const validate = async function (decoded, request) {
         } }
     });
 
-    // Cookie experiment
+    // Cookie settings
     server.state('token', {
-        ttl: 15 * 60 * 1000,
+        ttl: 15 * 1000,
         isSecure: false,
         isHttpOnly: true,
         // isSameSite: false,
@@ -55,16 +53,15 @@ const validate = async function (decoded, request) {
         clearInvalid: true, 
         strictHeader: true 
     });
-    // Registreer JWT2 plugin
+    // Register JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));
-    // Definieer strategie
+    // Define strategy
     server.auth.strategy('jwt', 'jwt',
         {
-            key: process.env.SECRET,  // Geheim voor HMAC hash. Staat gedefinieerd in .env in de root
-            validate: validate, // Roep validate functie aan bovenaan
+            key: process.env.SECRET, 
+            validate: validate, 
             verifyOptions: { algorithms: ['HS256'] }
         });
-    // Zet deze strategie op default
     server.auth.default('jwt');
     // Load routes
     server.route(routes);

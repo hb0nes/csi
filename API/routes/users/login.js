@@ -59,7 +59,7 @@ module.exports = [
                 l.info(`User ${req.payload.username} has logged in succesfully.`);
                 h.state('token', token);
                 let loggedIn = {
-                    'username:': req.payload.username,
+                    'username': req.payload.username,
                     'scope': scope
                 }
                 return h.response(loggedIn).header('Authorization', token).code(200);

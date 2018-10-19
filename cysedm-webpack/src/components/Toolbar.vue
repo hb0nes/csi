@@ -1,21 +1,48 @@
 <template>
   <v-toolbar dark color="primary">
     <v-toolbar-side-icon></v-toolbar-side-icon>
-
     <v-toolbar-title class="white--text">CyseDM</v-toolbar-title>
-
     <v-spacer></v-spacer>
-
-    <v-btn icon>
-      <v-icon>person</v-icon>
+    <v-menu v-if="isLoggedIn" offset-y>
+    <v-btn flat slot="activator">
+      <span> {{ currentUser.username }} </span>
+      <v-icon>arrow_drop_down</v-icon>
     </v-btn>
-
+    <v-list>
+      <v-list-tile 
+      v-for="(action, index) in actions"
+      :key="index"
+      @click="action.action"
+      >
+      <v-list-tile-title> {{ action.title }} </v-list-tile-title>
+      </v-list-tile>
+    </v-list>
+</v-menu>
     <v-btn icon>
       <v-icon>search</v-icon>
     </v-btn>
-
     <v-btn icon>
       <v-icon>more_vert</v-icon>
     </v-btn>
   </v-toolbar>
 </template>
+
+<script>
+import { mapGetters } from "vuex";
+import store from '@/store';
+
+export default {
+  data: () => ({
+    menu: false,
+    actions: [
+      { 
+        title: 'Logout', 
+        action: function () { store.commit("users/logout")}
+      }
+    ]
+  }),
+  computed: {
+    ...mapGetters("users", ["isLoggedIn", "currentUser"])
+  }
+};
+</script>

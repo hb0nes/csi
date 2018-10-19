@@ -1,11 +1,14 @@
 const state = {
-    status = '',
-    user = {}
+    status: '',
+    user: {}
 }
 
 const getters = {
     authStatus: state => state.status,
-    isLoggedIn: state => !!state.user
+    isLoggedIn: state => state.status === 'success',
+    currentUser: state => {
+        return state.user;
+    }
 }
 
 const actions = {

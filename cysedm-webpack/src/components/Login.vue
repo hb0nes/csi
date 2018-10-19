@@ -35,17 +35,21 @@
                     ></v-text-field>
                   <v-alert v-model="loginErr" dismissible type="error" transition="scale-transition"> {{errMsg}} </v-alert>
                   <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> Succesfully authenticated. </v-alert>
-                  <v-btn :disabled="!valid" block color="primary" @click="login"> Login </v-btn>
+                  <v-btn 
+                  :loading="loading" 
+                  :disabled="!valid || loading"
+                  block 
+                  color="primary" 
+                  @click="login"
+                  > 
+                  Login 
+                  </v-btn>
                 </v-form>
-              <v-btn dark block color="secondary" @click="admintest"> Forgot password </v-btn>
               </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
-          <p> {{username}} and {{password}} and {{loginMsg}} and {{errMsg}}</p>
-          <p> {{debug}} </p>
       </v-container>
-      <v-link href="/register">Sign up</v-link>
     </v-content>
   </v-app>
 </template>
@@ -59,12 +63,14 @@ import {
 } from "vuelidate/lib/validators";
 
 export default {
-  name: 'Login',
+  name: "Login",
   validations: {
     username: { required, maxLength: maxLength(12), alphaNum },
     password: { required, minLength: minLength(8) }
   },
   data: () => ({
+    loader: null,
+    loading: false,
     valid: true,
     username: "",
     password: "",
@@ -96,6 +102,8 @@ export default {
   },
   methods: {
     login() {
+      this.loader = 'loading';
+      this.$store.commit("users/auth_request");
       this.axios({
         method: "post",
         data: {
@@ -106,30 +114,65 @@ export default {
         url: "http://localhost:3000/api/v1/user/login"
       })
         .then(res => {
+          this.loading = false;
+          this.$store.commit("users/auth_success", res.data);
           this.loginRes = true;
           this.loginMsg = res.data;
         })
         .catch(err => {
+          this.loading = false;
+          this.$store.commit("users/auth_error");
           this.loginErr = true;
           this.errMsg = err.message;
-          if (err.response.data) {
+          if (err.response) {
             this.errMsg = err.response.data.message;
           }
         });
-    },
-    admintest() {
-      this.axios({
-        method: "get",
-        withCredentials: true,
-        url: "http://localhost:3000/api/v1/admintest"
-      })
-        .then(res => {
-          this.debug = res.data;
-        })
-        .catch(err => {
-          this.debug = err;
-        });
+    }
+  },
+  watch: {
+    loader() {
+      const l = this.loader;
+      this[l] = !this[l];
+      setTimeout(() => (this[l] = false), 3000);
+      this.loader = null;
     }
   }
 };
 </script>
+
+<!--Loader styles-->
+<style>
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
