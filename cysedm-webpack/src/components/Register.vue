@@ -86,7 +86,7 @@
                     ></v-text-field>
                   <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}}</v-alert>
                   <v-alert v-model="regRes" dismissible type="success" transition="scale-transition"> Succesfully registered. </v-alert>
-                  <v-btn :disabled="!valid" block color="primary" @click="register"> Register </v-btn>
+                  <v-btn :loading="loading" :disabled="!valid || loading" block color="primary" @click="register"> Register </v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -119,6 +119,8 @@ const isValidName = naam => {
 export default {
   name: "Register",
   data: () => ({
+    loader: null,
+    loading: false,
     valid: true,
     username: "",
     firstname: "",
@@ -199,6 +201,7 @@ export default {
   },
   methods: {
     register() {
+      this.loader = 'loading';
       this.axios({
         method: "post",
         data: {
@@ -212,11 +215,13 @@ export default {
         url: "http://localhost:3000/api/v1/user/create"
       })
         .then(res => {
+          this.loading = false;
           this.regRes = true;
           this.regMsg = res.data;
           this.registered = true;
         })
         .catch(err => {
+          this.loading = false;
           this.regErr = true;
           this.errMsg = err.message.toString();
           if (err.response.data) {
@@ -224,6 +229,49 @@ export default {
           }
         });
     }
+  },
+  watch: {
+    loader() {
+      const l = this.loader;
+      this[l] = !this[l];
+      setTimeout(() => (this[l] = false), 3000);
+      this.loader = null;
+    }
   }
 };
 </script>
+<!--Loader styles-->
+<style>
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
