@@ -1,11 +1,11 @@
 #!/bin/bash
 # Create user/admin
 set -e
-USERNAMES=(     b0nes           epicfail    user           user2           hackerman"'"'`"`' hackerman        hackerman        hackerman           hackerman               )
-PASSWORDS=(     12345678        87654321    18273645       12341234        hackerman         "'"'`"`'         123456789        123456789           12341234                )
-EMAILS=(        herman@mail.nl  tom@mail.nl user@mail.nl   user2@mail.nl   bla@mail.nl       "'"'`"`'@mail.nl "'"'`"`'@mail.nl regularmail@mail.nl bla@mail.               )
-FIRSTNAMES=(    herman          tom         userfirstname  firstnameuser   bla               bla              bla               "'"'`"`'           hacker                  )
-LASTNAMES=(     bonnes          hagen       userlastname   lastnameuser    bla               bla              bla               "'"'`"`'           man                     )
+USERNAMES=(     b0nes           epicfail    budroid        user           user2           hackerman"'"'`"`' hackerman        hackerman        hackerman           hackerman               )
+PASSWORDS=(     12345678        87654321    12345678       18273645       12341234        hackerman         "'"'`"`'         123456789        123456789           12341234                )
+EMAILS=(        herman@mail.nl  tom@mail.nl budroid@m.nl   user@mail.nl   user2@mail.nl   bla@mail.nl       "'"'`"`'@mail.nl "'"'`"`'@mail.nl regularmail@mail.nl bla@mail.               )
+FIRSTNAMES=(    herman          tom         robert         firstnameuser   bla               bla              bla               "'"'`"`'           hacker                  )
+LASTNAMES=(     bonnes          hagen       knook          lastnameuser    bla               bla              bla               "'"'`"`'           man                     )
 
 SERVER=localhost:3000/api/v1
 # SERVER=https://cysedm.herokuapp.com/api/v1
@@ -23,18 +23,19 @@ done
 # Login test
 for (( i=0; i<${#USERNAMES[*]}; i++ )); do
     echo "Logging in with username. ${USERNAMES[$i]}|${PASSWORDS[$i]}"
-    http -b POST ${SERVER}/user/login username=${USERNAMES[$i]} password=${PASSWORDS[$i]} 
+    http -b POST ${SERVER}/user/login login=${USERNAMES[$i]} password=${PASSWORDS[$i]} 
     echo "Logging in with email. ${EMAILS[$i]}|${PASSWORDS[$i]}"
-    http -b POST ${SERVER}/user/login email=${EMAILS[$i]} password=${PASSWORDS[$i]} 
+    http -b POST ${SERVER}/user/login login=${EMAILS[$i]} password=${PASSWORDS[$i]} 
 done
     echo "Logging in with only password. ${EMAILS[$i]}|${PASSWORDS[$i]}"
     http -b POST ${SERVER}/user/login password=${PASSWORDS[$i]} 
 
 # Login and store tokens
-ADMIN_TOKEN=$(http -h POST ${SERVER}/user/login username=b0nes password=12345678 | grep authorization | cut -d\  -f2 )
+ADMIN_TOKEN=$(http -h POST ${SERVER}/user/login login=b0nes password=12345678 | grep authorization | cut -d\  -f2 )
 [ "$ADMIN_TOKEN" ] ||  echo "Token test failed."
-USER_TOKEN=$(http -h POST ${SERVER}/user/login username=user password=18273645 | grep authorization | cut -d\  -f2 )
+USER_TOKEN=$(http -h POST ${SERVER}/user/login login=user password=18273645 | grep authorization | cut -d\  -f2 )
 [ "$USER_TOKEN" ] || echo "Username Token test failed."
+BUDROID_TOKEN=$(http -h POST ${SERVER}/user/login login=budroid password=12345678 | grep authorization | cut -d\  -f2 )
 echo "Admin Token: ${ADMIN_TOKEN}"
 echo "User Token: ${USER_TOKEN}"
 
@@ -71,9 +72,11 @@ http -b GET ${SERVER}/user/user2/PasSwoRd Authorization:${ADMIN_TOKEN}
 http -b GET ${SERVER}/message/load Authorization:$USER_TOKEN --verify=no -b
 # Get a message
 http -b POST ${SERVER}/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla1 --verify=no -b
+http -b POST ${SERVER}/message/create Authorization:$ADMIN_TOKEN receiver=user2 content=bladiebladiebla1 --verify=no -b
 http -b POST ${SERVER}/message/create Authorization:$ADMIN_TOKEN receiver=user content=bladiebladiebla2 --verify=no -b
 http -b POST ${SERVER}/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla3 --verify=no -b
 http -b POST ${SERVER}/message/create Authorization:$USER_TOKEN receiver=b0nes content=bladiebladiebla4 --verify=no -b
+http -b POST ${SERVER}/message/create Authorization:$BUDROID_TOKEN receiver=b0nes content=Jebenteenkneus --verify=no -b
 http -b POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content= --verify=no -b
 http -b POST ${SERVER}/message/create Authorization:$USER_TOKEN sender=b0nes receiver=user content=bladiebladiebla extraparameter=bullshit --verify=no -b
 http -b DELETE ${SERVER}/message/delete/1 Authorization:$USER_TOKEN --verify=no
