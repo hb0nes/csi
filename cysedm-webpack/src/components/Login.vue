@@ -8,45 +8,51 @@
               <v-toolbar dark color="primary">
                 <v-toolbar-title>Login</v-toolbar-title>
                 <v-spacer></v-spacer>
-                
               </v-toolbar>
               <v-card-text>
                 <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && logIn()">
                   <v-text-field
                     v-model="login"
                     :error-messages="loginErrors"
-                    prepend-icon="person" 
+                    prepend-icon="person"
                     label="Username or Email"
                     type="text"
                     required
                     @input="$v.login.$touch()"
                     @blur="$v.login.$touch()"
-                    ></v-text-field>
-                  
+                  ></v-text-field>
                   <v-text-field
                     v-model="password"
                     :error-messages="passwordErrors"
                     prepend-icon="lock"
-                    label="Password" 
-                    type="password" 
+                    label="Password"
+                    type="password"
                     required
                     @input="$v.password.$touch()"
                     @blur="$v.password.$touch()"
-                    ></v-text-field>
-                  <v-alert v-model="loginErr" dismissible type="error" transition="scale-transition"> {{errMsg}} </v-alert>
-                  <v-alert v-model="loginRes" dismissible type="success" transition="scale-transition"> Succesfully authenticated. </v-alert>
-                  <v-btn 
-                  :loading="loading" 
-                  :disabled="!valid || loading"
-                  block 
-                  color="primary" 
-                  @click="logIn"
-                  > 
-                  Login 
-                  </v-btn>
+                  ></v-text-field>
+                  <v-alert
+                    v-model="loginErr"
+                    dismissible
+                    type="error"
+                    transition="scale-transition"
+                  >{{errMsg}}</v-alert>
+                  <v-alert
+                    v-model="loginRes"
+                    dismissible
+                    type="success"
+                    transition="scale-transition"
+                  >Succesfully authenticated.</v-alert>
+                  <v-btn
+                    :loading="loading"
+                    :disabled="!valid || loading"
+                    block
+                    color="primary"
+                    @click="logIn"
+                  >Login</v-btn>
                 </v-form>
-              <v-btn dark block color="secondary" to="/forgot"> Forgot password </v-btn>
-              <v-btn block outline color="primary" to="/register"> Register </v-btn>
+                <v-btn dark block color="secondary" to="/forgot">Forgot password</v-btn>
+                <v-btn block outline color="primary" to="/register">Register</v-btn>
               </v-card-text>
             </v-card>
           </v-flex>
@@ -93,7 +99,7 @@ export default {
   },
   methods: {
     logIn() {
-      this.loader = 'loading';
+      this.loader = "loading";
       this.$store.commit("users/auth_request");
       this.axios({
         method: "post",

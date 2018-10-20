@@ -35,10 +35,9 @@ module.exports = [
                 return h.response(conversations).code(200);              
             } catch (err) {
                 return Boom.badImplementation(`Could not load conversations. Error: ${err}`)
-            }          
+            }
         }
     }
 ]
-
 
 

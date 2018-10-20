@@ -9,9 +9,7 @@
                 <v-toolbar-title>Forgot password?</v-toolbar-title>
                 <v-spacer></v-spacer>
               </v-toolbar>
-              <v-card-text>
-                Please contact an administrator.
-              </v-card-text>
+              <v-card-text>Please contact an administrator.</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>

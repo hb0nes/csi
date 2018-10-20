@@ -31,7 +31,6 @@ module.exports = [
             // Validate
             const result = Joi.validate(req.payload, schema);
             if (result.error || !req.payload.login || !req.payload.password) {
-                console.log("validation failed");
                 l.info(`Login attempt failed ${result.error || req.payload.login}.`);
                 return Boom.badRequest(`Login failed. Invalid credentials.`);
             }
