@@ -13,15 +13,17 @@
           <v-list three-line>
             <!-- Template voor repeterend item -->
             <template v-for="(item, index) in users">
-              <v-list-tile :key="item.name" avatar>
-                <v-list-tile-avatar>
-                  <img :src="item.avatar">
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                  <v-list-tile-sub-title v-html="item.state"></v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-hover :key="index">
+                <v-list-tile :key="item.name" avatar :style="{ cursor: 'pointer'}" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
+                  <v-list-tile-avatar>
+                    <img :src="item.avatar">
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="item.state"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </v-hover>
               <v-divider :inset="item.inset" :key="index"></v-divider>
             </template>
           </v-list>
