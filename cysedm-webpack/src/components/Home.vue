@@ -13,7 +13,6 @@
           <v-list three-line>
             <!-- Template voor repeterend item -->
             <template v-for="(item, index) in users">
-              <v-divider :inset="item.inset" :key="index"></v-divider>
               <v-list-tile :key="item.name" avatar>
                 <v-list-tile-avatar>
                   <img :src="item.avatar">
@@ -23,6 +22,7 @@
                   <v-list-tile-sub-title v-html="item.state"></v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
+              <v-divider :inset="item.inset" :key="index"></v-divider>
             </template>
           </v-list>
         </v-card>
