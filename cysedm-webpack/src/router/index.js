@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '@/components/Login'
 import register from '@/components/Register'
 import forgot from '@/components/Forgot'
+import home from '@/components/Home'
 
 Vue.use(Router)
 
@@ -31,5 +32,10 @@ export default new Router({
       name: 'forgot',
       component: forgot
     },
+    {
+      path: '/home',
+      name: 'home',
+      component: home
+    }
   ]
 })
