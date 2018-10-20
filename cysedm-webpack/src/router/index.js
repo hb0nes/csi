@@ -3,18 +3,19 @@ import Router from 'vue-router'
 import login from '@/components/Login'
 import register from '@/components/Register'
 import forgot from '@/components/Forgot'
+import notFound from '@/components/NotFound'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '*',
+      path: '/',
       redirect: { name: 'login' }
     },
     {
-      path: '/',
-      redirect: { name: 'login' }
+      path: '*',
+      component: notFound
     },
     {
       path: '/login',
