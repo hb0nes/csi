@@ -10,13 +10,8 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-<<<<<<< HEAD
-      path: '*',
-      redirect: { name: 'notfound' }
-=======
       path: '/',
       redirect: { name: 'login' }
->>>>>>> 9bf394f29a3dfd34f17ac4756f0bcdfa128d761a
     },
     {
       path: '*',
