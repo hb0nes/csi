@@ -1,33 +1,29 @@
 <template>
-  <v-navigation-drawer v-model="drawer">
+  <v-navigation-drawer permanent>
     <v-layout>
       <v-flex>
-        <v-card>
-          <v-toolbar>
+          <v-toolbar color="blue lighten-5">
             <v-toolbar-title>Conversations</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon>
               <v-icon>search</v-icon>
             </v-btn>
           </v-toolbar>
-          <v-list three-line>
+          <v-list two-line>
             <!-- Template voor repeterend item -->
             <template v-for="(item, index) in users">
-              <v-hover :key="index">
-                <v-list-tile :key="item.name" avatar :style="{ cursor: 'pointer'}" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
+                <v-list-tile :key="item.name" avatar @click="placeholder">
                   <v-list-tile-avatar>
                     <img :src="item.avatar">
                   </v-list-tile-avatar>
                   <v-list-tile-content>
-                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title v-html="item.state"></v-list-tile-sub-title>
+                    <v-list-tile-title> {{ item.name }} </v-list-tile-title>
+                    <v-list-tile-sub-title> {{ item.state }} </v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
-              </v-hover>
-              <v-divider :inset="item.inset" :key="index"></v-divider>
+              <v-divider inset :key="index"></v-divider>
             </template>
           </v-list>
-        </v-card>
       </v-flex>
     </v-layout>
   </v-navigation-drawer>
@@ -78,6 +74,11 @@
           },
         ]
       };
+    },
+    methods: {
+      placeholder(){
+        return;
+      }
     }
   };
 </script>
