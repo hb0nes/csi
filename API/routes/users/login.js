@@ -53,7 +53,7 @@ module.exports = [
                     scope.push('admin');
                 }
                 // Create token and return it
-                let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "15m" });
+                let token = Jwt.sign({ "id": user.id, "username": user.username, "scope": scope }, process.env.SECRET, { expiresIn: "24h" });
                 l.info(`User ${user.username} has logged in succesfully.`);
                 h.state('token', token);
                 let loggedIn = {

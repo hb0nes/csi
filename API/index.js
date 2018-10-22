@@ -6,6 +6,7 @@ const db = require('./models')
 const routes = require('./routes');
 const l = require('./logger');
 
+
 // Credential validation
 const validate = async function (decoded, request) {
     // Find user by ID
@@ -30,36 +31,39 @@ const validate = async function (decoded, request) {
     await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
     await db.User.sync({ force: true });
     db.Message.sync({ force: true });
-    
+
     // HAPI server
     const server = Hapi.server({
         port: process.env.PORT || 3000,
         host: '0.0.0.0',
-        routes: { cors: {
-            origin: ['*'],
-            credentials: true
-        } }
+        routes: {
+            cors: {
+                origin: ['*'],
+                credentials: true
+            }
+        }
     });
 
     // Cookie settings
     server.state('token', {
-        ttl: 15 * 1000,
+        ttl: 24 * 60 * 60 * 1000,
         isSecure: false,
         isHttpOnly: true,
         // isSameSite: false,
         isSameSite: 'Strict',
         encoding: 'none',
         path: '/',
-        clearInvalid: true, 
-        strictHeader: true 
+        clearInvalid: true,
+        strictHeader: true
     });
     // Register JWT2 plugin
     await server.register(require('hapi-auth-jwt2'));
+
     // Define strategy
     server.auth.strategy('jwt', 'jwt',
         {
-            key: process.env.SECRET, 
-            validate: validate, 
+            key: process.env.SECRET,
+            validate: validate,
             verifyOptions: { algorithms: ['HS256'] }
         });
     server.auth.default('jwt');

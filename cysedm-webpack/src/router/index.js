@@ -4,7 +4,7 @@ import login from '@/components/Login'
 import register from '@/components/Register'
 import forgot from '@/components/Forgot'
 import notFound from '@/components/NotFound'
-import home from '@/components/Home'
+import messages from '@/components/Messages'
 
 Vue.use(Router)
 
@@ -34,9 +34,9 @@ export default new Router({
       component: forgot
     },
     {
-      path: '/home',
-      name: 'home',
-      component: home
+      path: '/messages',
+      name: 'messages',
+      component: messages
     }
   ]
 })

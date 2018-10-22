@@ -6,7 +6,7 @@ const Boom = require('boom');
 module.exports = [
     {
         method: 'GET',
-        path: '/api/v1/message/conversations',
+        path: '/api/v1/message/partners',
         config: {
             auth: {
                 strategy: 'jwt',
@@ -15,26 +15,32 @@ module.exports = [
         },
         handler: async (request, h) => {
             try {
-                conversations = [];
+                partners = [];
                 // Find all messages to/from user/'partner'
                 let username = request.auth.credentials.username;
                 let results = await db.sequelize.query(`
-                    SELECT DISTINCT(receiver) AS conversation
+                SELECT partners.*, u.firstName, u.lastName, u.status, u.avatar
+                FROM
+                (
+                    SELECT DISTINCT(receiver) AS partner
                     FROM messages
                     WHERE sender = ?
                     UNION 
-                    SELECT DISTINCT(sender) as conversation
+                    SELECT DISTINCT(sender) as partner
                     FROM messages
-                    WHERE receiver = ?;`, { replacements: [username,username], type: db.sequelize.QueryTypes.SELECT});
+                    WHERE receiver = ?
+                ) partners
+                INNER JOIN users u
+                ON partners.partner = u.username;`, { replacements: [username,username], type: db.sequelize.QueryTypes.SELECT});
                 if (!results) {
-                    return h.response(conversations).code(200);              
+                    return h.response(partners).code(200);              
                 }
                 results.forEach((result) => {
-                    conversations.push(result.conversation);
+                    partners.push(result);
                 })
-                return h.response(conversations).code(200);              
+                return h.response(partners).code(200);              
             } catch (err) {
-                return Boom.badImplementation(`Could not load conversations. Error: ${err}`)
+                return Boom.badImplementation(`Could not load partners. Error: ${err}`)
             }
         }
     }

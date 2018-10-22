@@ -1,6 +1,7 @@
 <template>
-  <v-toolbar dark color="primary">
-    <v-toolbar-side-icon></v-toolbar-side-icon>
+  <v-toolbar app fixed clipped-left dark color="primary">
+    <v-toolbar-side-icon @click="toggleDrawer()"></v-toolbar-side-icon>
+    <!-- <v-toolbar-side-icon @click.stop="$emit('toggleNav')"></v-toolbar-side-icon> -->
     <router-link to="/">
       <v-toolbar-title class="white--text">CyseDM</v-toolbar-title>
     </router-link>
@@ -37,6 +38,11 @@ export default {
   },
   computed: {
     ...mapGetters("users", ["isLoggedIn", "currentUser"])
+  },
+  methods: {
+    toggleDrawer() {
+      this.$eventHub.$emit('toggleDrawer');
+    }
   }
 };
 </script>

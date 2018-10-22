@@ -1,13 +1,14 @@
 <template>
   <v-app>
-    <Toolbar/>
-    <router-view />
+    <router-view :drawer="drawer"/>
+    <Toolbar @toggleNav="drawer = !drawer" />
   </v-app>
 </template>
 
 <script>
 import Toolbar from "./components/Toolbar";
 import router from "./router";
+
 
 export default {
   router,
@@ -45,7 +46,9 @@ export default {
     );
   },
   data() {
-    return {};
+    return {
+      drawer: true
+    };
   }
 };
 </script>

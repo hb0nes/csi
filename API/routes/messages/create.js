@@ -11,6 +11,7 @@ const schemaCreate = Joi.object().keys({
     "receiver": Joi.string().min(2).max(40).alphanum().required(),
     "content": Joi.string().min(1).required(),
 });
+const io = require('socket.io')(3001);
 
 module.exports = [
     {
@@ -37,6 +38,7 @@ module.exports = [
                         // Encrypt content before insertion
                         content: await modules.encrypt(request.payload.content),
                     });
+                    io.emit('test', 'testdata');
                     return h.response('Message posted succesfully').code(201);
                 }
                 else {

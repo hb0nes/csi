@@ -7,15 +7,18 @@ import VueAxios from 'vue-axios'
 import Vuelidate from 'vuelidate'
 import Router from 'vue-router'
 import store from './store'
+import VueSocketio from 'vue-socket.io';
+
 // HTTP calls
 Vue.use(VueAxios, axios)
 // Validation
 Vue.use(Vuelidate)
 // Routing
 Vue.use(Router)
-
-
+// Socket.IO
+Vue.use(VueSocketio, 'http://localhost:3001');
 Vue.config.productionTip = false
+Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 new Vue({
   // Include the store declaration

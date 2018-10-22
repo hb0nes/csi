@@ -115,6 +115,7 @@ export default {
           this.$store.commit("users/auth_success", res.data);
           this.loginRes = true;
           this.loginMsg = res.data;
+          this.$router.push('messages');
         })
         .catch(err => {
           this.loading = false;

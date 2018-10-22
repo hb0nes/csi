@@ -40,8 +40,27 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: false,
             defaultValue: false
+        },
+        status: {
+            type: Sequelize.STRING(128),
+            defaultValue: "I'm using CyseDM!",
+            allowNull: false
+        },
+        avatar: {
+            type: Sequelize.STRING(255),
+            defaultValue: "bla",
+            defaultValue: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT-BwYJuj3yyVST5zpsvuLOLJWk26C9uWSk0vE2HbmTKX38j_Wdw",
+            allowNull: false
+        },
+        created: {
+            type: Sequelize.DATE,
+            defaultValue: sequelize.fn('NOW'),
+            allowNull: false
         }
-    });
+        }, {
+            timestamps: false
+        }
+    );
 
     User.associate = (models) => {
         models.User.hasMany(models.Message, { foreignKey: 'sender', sourceKey: 'username' });

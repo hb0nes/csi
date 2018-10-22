@@ -37,7 +37,7 @@ module.exports = [
                         "content": content, "datetime": result.get('createdAt')
                     })
                 })
-                return h.response(`Messages loaded successfully.`).code(200);              
+                return h.response(results).code(200);              
             } catch (err) {
                 return Boom.badImplementation(`Could not load messages. Error: ${err}`)
             }          
