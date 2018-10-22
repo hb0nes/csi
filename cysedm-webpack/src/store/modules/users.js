@@ -1,3 +1,10 @@
+import Vuex from 'vuex'
+import Vue from 'vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios);
+Vue.use(Vuex);
+
 const state = {
     status: '',
     user: {}
@@ -29,6 +36,18 @@ const mutations = {
     logout(state) {
         state.status = '';
         state.user = {};
+        axios({ method: "GET", withCredentials: true, url: "http://localhost:3000/api/v1/user/unstate" }).catch(() => { })
+    },
+    validate(state) {
+        axios({
+            method: "post",
+            data: {
+                user: state.user
+            },
+            withCredentials: true,
+            url: "http://localhost:3000/api/v1/user/validate"
+        }).catch(() => {
+        });
     }
 }
 

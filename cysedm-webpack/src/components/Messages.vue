@@ -43,15 +43,15 @@
         </v-container>
       </div>
       <div class="typer">
-        <input
+        <input v-if="currentPartner"
           id="msgBox"
           v-model="msgContent"
           @keyup.enter="sendMsg"
           placeholder="Type a message"
           type="text"
         >
-        <v-btn
-          :disabled="msgContent.length < 1 || !currentUser"
+        <v-btn v-if="currentPartner"
+          :disabled="msgContent.length < 1"
           flat
           color="primary"
           class="subheading"
@@ -70,7 +70,7 @@ export default {
       isConnected: false,
       partners: [],
       messages: [],
-      currentUser: this.$store.getters["users/currentUser"].username,
+      
       currentPartner: "",
       debug: false,
       drawer: true,
@@ -114,7 +114,7 @@ export default {
     },
     // ... Send message
     sendMsg() {
-      if (this.msgContent.length > 0) {
+      if (this.msgContent.length > 0 && this.currentUser) {
         // Add your sent message to the page without doing another API call
         this.messages.push({
           sender: this.currentUser,
@@ -191,6 +191,11 @@ export default {
       classes.push("elevation-2");
       return classes;
     }
+  },
+  computed: {
+      currentUser: function() {
+         return this.$store.getters["users/currentUser"].username;
+      }
   },
   beforeMount() {
     this.getConversations();

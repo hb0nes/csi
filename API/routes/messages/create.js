@@ -6,6 +6,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 // Ecryption module
 const modules = require(__dirname + "/modules/modules.js");
+
 const io = require('../../plugins/io');
 
 
@@ -41,7 +42,8 @@ module.exports = [
                     });
                     // Send an update to ONLY the receiver, for his browser to reload all messages/conversations if needed
                     // This is possible because a unique room was created for each individual, as to not broadcast everything to everyone
-                    await io.to(request.payload.receiver).emit('message', request.auth.credentials.username);
+                    await io.to(request.payload.receiver)
+                    .emit('message', request.auth.credentials.username);
                     return h.response('Message posted succesfully').code(201);
                 }
                 else {

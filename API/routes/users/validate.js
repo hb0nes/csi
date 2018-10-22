@@ -23,16 +23,16 @@ module.exports = [
                         user.username !== req.auth.credentials.username ||
                         JSON.stringify(user.scope) !== JSON.stringify(req.auth.credentials.scope)
                     ) {
-                        return Boom.unauthorized(`You've been tampering with localStorage, haven't you?`);
+                    return Boom.unauthorized('What?.');
                     }
                 } else {
-                    return Boom.unauthorized(`You're missing either username or scope. Hmm...`);
+                    return Boom.unauthorized('What?');
                 }
                 return 'Successfully validated.'
             }
             catch (err) {
                 l.error('User validation failed. Someone been tampering with the localStorage @ frontend?', err);
-                return Boom.unauthorized(`Validating user failed. Hackerman?`);
+                return Boom.unauthorized('Something went wrong on the server.')
             }
         }
     }
