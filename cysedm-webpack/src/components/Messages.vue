@@ -38,8 +38,7 @@
               <span :class="messageStyle(msg.sender)">{{msg.content}}</span>
             </v-flex>
             <!-- debug: {{ debug }} -->
-            <p v-if="isConnected">We're connected to the server!</p>
-            {{socketData}}
+            <!-- {{partners}} -->
           </v-layout>
         </v-container>
       </div>
@@ -52,7 +51,7 @@
           type="text"
         >
         <v-btn
-          :disabled="msgContent.length < 1"
+          :disabled="msgContent.length < 1 || !currentUser"
           flat
           color="primary"
           class="subheading"
@@ -68,7 +67,6 @@ export default {
   name: "Messages",
   data() {
     return {
-      socketData: "",
       isConnected: false,
       partners: [],
       messages: [],
@@ -86,12 +84,21 @@ export default {
     disconnect() {
       this.isConnected = false;
     },
-    message(data) {
-      // if (this.currentPartner === partner) {
-      //   this.getMessages(this.currentPartner);
-      // }
-      this.socketData = 'test',data
-      // this.getConversations();
+    message: function(sender) {
+      // Update current messages if you're staring at the conversation with the sender
+      if (this.currentPartner === sender) {
+        this.getMessages(sender);
+      }
+      // Check if this sender is currently in your conversation list. If not, reload that list.
+      let inList = false;
+      this.partners.forEach(p => {
+        if (p.partner === sender) {
+          inList = true;
+        }
+      });
+      if (!inList) {
+        this.getConversations();
+      }
     }
   },
   methods: {
@@ -190,6 +197,7 @@ export default {
   },
   created() {
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
+    this.$socket.emit("join", this.currentUser);
   },
   beforeDestroy() {
     this.$eventHub.$off("toggleDrawer");

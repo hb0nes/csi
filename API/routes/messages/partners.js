@@ -35,10 +35,7 @@ module.exports = [
                 if (!results) {
                     return h.response(partners).code(200);              
                 }
-                results.forEach((result) => {
-                    partners.push(result);
-                })
-                return h.response(partners).code(200);              
+                return h.response(results).code(200);              
             } catch (err) {
                 return Boom.badImplementation(`Could not load partners. Error: ${err}`)
             }

@@ -6,6 +6,7 @@ const db = require('./models')
 const routes = require('./routes');
 const l = require('./logger');
 
+const io = require('./plugins/io');
 
 // Credential validation
 const validate = async function (decoded, request) {
