@@ -37,7 +37,7 @@
             <v-flex xs12 v-for="(msg, i) in messages" :key="i">
               <span :class="messageStyle(msg.sender)">{{msg.content}}</span>
             </v-flex>
-            <!-- debug: {{ debug }} -->
+            debug: {{ debug }} 
             <!-- {{partners}} -->
           </v-layout>
         </v-container>
@@ -78,6 +78,9 @@ export default {
     };
   },
   sockets: {
+    bla(data) {
+        this.debug = data
+    },
     connect() {
       this.isConnected = true;
     },

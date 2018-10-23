@@ -5,6 +5,7 @@ module.exports = [
         path: '/',
         config: { auth: false },
         handler: (req, h) => {
+            h.io.emit('bla', 'testdata');
             return `This is an API.`;
         }
     }

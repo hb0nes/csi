@@ -6,7 +6,6 @@ const db = require('./models')
 const routes = require('./routes');
 const l = require('./logger');
 
-const io = require('./plugins/io');
 
 // Credential validation
 const validate = async function (decoded, request) {
@@ -44,6 +43,9 @@ const validate = async function (decoded, request) {
             }
         }
     });
+    
+    const io = require('socket.io')(server.listener);
+    server.decorate('toolkit', 'io', io);
 
     // Cookie settings
     server.state('token', {

@@ -16,7 +16,7 @@ Vue.use(Vuelidate)
 // Routing
 Vue.use(Router)
 // Socket.IO
-Vue.use(VueSocketio, 'http://localhost:3001');
+Vue.use(VueSocketio, 'http://localhost:3000');
 Vue.config.productionTip = false
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
