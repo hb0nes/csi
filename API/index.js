@@ -38,13 +38,23 @@ const validate = async function (decoded, request) {
         host: '0.0.0.0',
         routes: {
             cors: {
-                origin: ['*'],
+                origin: ['http://localhost:8080'],
                 credentials: true
             }
         }
     });
     
+    // Define socket that shares the port of HAPI and creates new rooms for each connection
+    // to directly contact them.
     const io = require('socket.io')(server.listener);
+    io.sockets.on('connection', function (socket) {
+        // data is username of person who went to view their messages
+        socket.on('join', function (data) {
+            if (data) {
+                socket.join(data); // join private room
+            }
+        });
+    });
     server.decorate('toolkit', 'io', io);
 
     // Cookie settings

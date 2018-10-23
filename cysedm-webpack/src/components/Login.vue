@@ -81,7 +81,6 @@ export default {
     loginMsg: "",
     loginErr: false,
     errMsg: "",
-    debug: ""
   }),
   computed: {
     loginErrors() {
