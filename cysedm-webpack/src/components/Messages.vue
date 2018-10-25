@@ -35,33 +35,30 @@
         <v-container grid-list-md>
           <v-layout row wrap="">
             <v-flex xs12 v-for="(msg, i) in messages" :key="i">
-              <span :class="messageStyle(msg.sender)">{{msg.content}}</span>
+              <template v-if="i == 0 || newDate(msg.datetime, messages[i-1].datetime)">
+                <div class="date">
+                  {{getDate(msg.datetime)}}
+                  <v-divider></v-divider>
+                </div>
+                </template>
+                <span :class="messageStyle(msg.sender)">
+                  {{msg.content}}<br>                  
+                  <em style="font-size: 0.7em">{{getTime(msg.datetime)}}</em>
+                </span>             
             </v-flex>
-            <!-- debug: {{ debug }}  -->
           </v-layout>
         </v-container>
       </div>
       <div class="typer">
-        <input v-if="currentPartner"
-          id="msgBox"
-          v-model="msgContent"
-          @keyup.enter="sendMsg"
-          placeholder="Type a message"
-          type="text"
-        >
-        <v-btn v-if="currentPartner"
-          :disabled="msgContent.length < 1"
-          flat
-          color="primary"
-          class="subheading"
-          @click="sendMsg"
-        >Send</v-btn>
+        <input v-if="currentPartner" id="msgBox" v-model="msgContent"  @keyup.enter="sendMsg" placeholder="Type a message" type="text">
+        <v-btn v-if="currentPartner" :disabled="msgContent.length < 1" flat color="primary" class="subheading" @click="sendMsg">Send</v-btn>
       </div>
     </v-content>
   </v-app>
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "Messages",
   data() {
@@ -70,8 +67,9 @@ export default {
       partners: [],
       messages: [],
       currentPartner: "",
+      debug: false,
       drawer: true,
-      msgContent: ""
+      msgContent: "",
     };
   },
   sockets: {
@@ -117,7 +115,7 @@ export default {
           sender: this.currentUser,
           receiver: this.currentPartner,
           content: this.msgContent,
-          datetime: ""
+          datetime: moment(new Date(), "YYYY-MM-DD HH:mm:ss")
         });
         // Clear input field
         let msg = this.msgContent;
@@ -187,12 +185,29 @@ export default {
       classes.push("message");
       classes.push("elevation-2");
       return classes;
-    }
+    },
+    newDate(nextDate, currDate) {
+      return (this.getDate(nextDate) != this.getDate(currDate))       
+    },
+    getDate(datetime){
+      moment.locale('nl');
+      var date = new Date();
+      let offset = date.getTimezoneOffset();
+      let dt = moment(datetime, "YYYY-MM-DD HH:mm:ss");
+      return moment(dt)/*.add()(-offset, "m")*/.format("l");
+    },
+    getTime(datetime){
+      moment.locale('nl');
+      var date = new Date();     
+      let offset = date.getTimezoneOffset();
+      let dt = moment(datetime, "YYYY-MM-DD HH:mm:ss");
+      return moment(dt)/*.add()add(-offset, "m").*/.format("HH:mm:ss");
+    },
   },
   computed: {
-      currentUser: function() {
-         return this.$store.getters["users/currentUser"].username;
-      }
+    currentUser: function() {
+      return this.$store.getters["users/currentUser"].username;
+    }
   },
   beforeMount() {
     this.getConversations();
@@ -237,6 +252,11 @@ export default {
   border-radius: 1.5em;
   font-size: 1.25rem;
   box-shadow: 0 -5px 10px -5px rgba(0, 0, 0, 0.2);
+}
+.date {
+  text-align: center;
+  padding: 10px;
+  font-size: 1em;
 }
 .message {
   padding: 10px;
