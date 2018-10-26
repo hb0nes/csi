@@ -1,10 +1,8 @@
 <template>
   <v-toolbar app fixed clipped-left dark color="primary">
-    <v-toolbar-side-icon @click="toggleDrawer()"></v-toolbar-side-icon>
+    <v-toolbar-side-icon v-if="isLoggedIn" @click="toggleDrawer()"></v-toolbar-side-icon>
     <!-- <v-toolbar-side-icon @click.stop="$emit('toggleNav')"></v-toolbar-side-icon> -->
-    <router-link to="/">
-      <v-toolbar-title class="white--text">CyseDM</v-toolbar-title>
-    </router-link>
+      <a><v-toolbar-title @click="redirect()" class="white--text">CyseDM</v-toolbar-title></a>
     <v-spacer></v-spacer>
     
     <!-- alert -->
@@ -74,6 +72,13 @@ export default {
 
   },
   methods: {
+    redirect(){
+      if (this.isLoggedIn) {
+        this.$router.push('messages');
+      } else {
+        this.$router.push('/');
+      }
+    },
     toggleDrawer() {
       this.$eventHub.$emit("toggleDrawer");
     }

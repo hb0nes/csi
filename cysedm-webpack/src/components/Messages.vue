@@ -112,6 +112,7 @@
         >Send</v-btn>
       </div>
     </v-content>
+    <audio id="audio" src="./sounds/notification.mp3"/>
   </v-app>
 </template>
 
@@ -147,6 +148,8 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
+      // Notify receiver
+      document.getElementById('audio').play();
       // Update current messages if you're staring at the conversation with the sender
       if (this.currentPartner === sender) {
         this.getMessages(sender);
