@@ -131,7 +131,7 @@ export default {
             receiver: this.currentPartner
           },
           withCredentials: true,
-          url: `http://localhost:3000/api/v1/message/create`
+          url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/create`
         })
           .then(() => {})
           .catch(err => {
@@ -146,7 +146,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: "http://localhost:3000/api/v1/message/partners"
+        url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/partners`
       })
         .then(res => {
           this.partners = res.data;
@@ -163,7 +163,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: `http://localhost:3000/api/v1/message/read/${partner}`
+        url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/read/${partner}`
       })
         .then(res => {
           this.messages = res.data;

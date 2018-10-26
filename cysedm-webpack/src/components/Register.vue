@@ -6,7 +6,7 @@
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12 mt-5">
               <v-toolbar dark color="primary">
-                <v-toolbar-title v-if="registered">Welcome {{ username }}!</v-toolbar-title>
+                <v-toolbar-title v-if="registered"> Welcome {{ username }}!</v-toolbar-title>
                 <v-toolbar-title v-else>Register</v-toolbar-title>
                 <v-spacer></v-spacer>
               </v-toolbar>
@@ -14,95 +14,79 @@
                 <div v-if="registered">
                   <!-- <p class="text-xs-center title">Your account has been created successfully.</p> -->
                   <v-alert class="mb-3" :value="true" color="success" icon="check_circle" outline>
-                    <span class="title">Your account has been created successfully!</span>
+                    <span class="title"> Your account has been created successfully! </span>
                   </v-alert>
-                  <v-btn block color="primary" to="/login">Return to loginpage</v-btn>
+                  <v-btn block color="primary" to="/login"> Return to loginpage </v-btn>
                 </div>
-                <v-form
-                  v-model="valid"
-                  lazy-validation
-                  @keyup.native.enter="valid && register()"
-                  v-else
-                >
-                  <v-text-field
+               <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && register()" v-else>
+                 <v-text-field
                     v-model="username"
                     :error-messages="usernameErrors"
-                    prepend-icon="person"
+                    prepend-icon="person" 
                     label="Username"
                     type="text"
                     required
                     @input="$v.username.$touch()"
                     @blur="$v.username.$touch()"
-                  ></v-text-field>
-                  <v-text-field
+                    ></v-text-field>
+
+                 <v-text-field
                     v-model="firstname"
                     :error-messages="firstnameErrors"
-                    prepend-icon="undo"
+                    prepend-icon="undo" 
                     label="First name"
                     type="text"
                     required
                     @input="$v.firstname.$touch()"
                     @blur="$v.firstname.$touch()"
-                  ></v-text-field>
-                  <v-text-field
+                    ></v-text-field>
+
+                 <v-text-field
                     v-model="lastname"
                     :error-messages="lastnameErrors"
-                    prepend-icon="redo"
+                    prepend-icon="redo" 
                     label="Last name"
                     type="text"
                     required
                     @input="$v.lastname.$touch()"
                     @blur="$v.lastname.$touch()"
-                  ></v-text-field>
-                  <v-text-field
+                    ></v-text-field>
+
+                 <v-text-field
                     v-model="email"
                     :error-messages="emailErrors"
-                    prepend-icon="mail_outline"
+                    prepend-icon="mail_outline" 
                     label="Email"
                     type="text"
                     required
                     @input="$v.email.$touch()"
                     @blur="$v.email.$touch()"
-                  ></v-text-field>
+                    ></v-text-field>
+
                   <v-text-field
                     v-model="password"
                     :error-messages="passwordErrors"
                     prepend-icon="done"
-                    label="Password"
-                    type="password"
+                    label="Password" 
+                    type="password" 
                     required
                     @input="$v.password.$touch()"
                     @blur="$v.password.$touch()"
-                  ></v-text-field>
+                    ></v-text-field>
+                  
                   <v-text-field
                     v-model="confirmpassword"
                     :error-messages="confirmErrors"
                     prepend-icon="done_all"
-                    label="Confirm password"
-                    type="password"
+                    label="Confirm password" 
+                    type="password" 
                     sameAsPassword
                     @input="$v.confirmpassword.$touch()"
                     @blur="$v.confirmpassword.$touch()"
-                  ></v-text-field>
-                  <v-alert
-                    v-model="regErr"
-                    dismissible
-                    type="error"
-                    transition="scale-transition"
-                  >{{errMsg}}</v-alert>
-                  <v-alert
-                    v-model="regRes"
-                    dismissible
-                    type="success"
-                    transition="scale-transition"
-                  >Succesfully registered.</v-alert>
-                  <v-btn
-                    :loading="loading"
-                    :disabled="!valid || loading"
-                    block
-                    color="primary"
-                    @click="register"
-                  >Register</v-btn>
+                    ></v-text-field>
+                  <v-alert v-model="regErr" dismissible type="error" transition="scale-transition"> {{errMsg}}</v-alert>
+                  <v-alert v-model="regRes" dismissible type="success" transition="scale-transition"> Succesfully registered. </v-alert>
+                  <v-btn :loading="loading" :disabled="!valid || loading" block color="primary" @click="register"> Register </v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -123,7 +107,6 @@ import {
   alpha,
   email
 } from "vuelidate/lib/validators";
-// import router from "../router";
 
 const isValidName = naam => {
   // Robert-Jan Buddenböhmer, N'tongabubu'ltnang, Pum Jr., Håvard Bøkko en Jan Železný moeten ook kunnen registreren
@@ -217,7 +200,7 @@ export default {
   },
   methods: {
     register() {
-      this.loader = "loading";
+      this.loader = 'loading';
       this.axios({
         method: "post",
         data: {
@@ -228,7 +211,7 @@ export default {
           password: this.password
         },
         withCredentials: true,
-        url: "http://localhost:3000/api/v1/user/create"
+        url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/create`
       })
         .then(res => {
           this.loading = false;

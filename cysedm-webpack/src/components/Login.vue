@@ -80,7 +80,7 @@ export default {
     loginRes: false,
     loginMsg: "",
     loginErr: false,
-    errMsg: "",
+    errMsg: ""
   }),
   computed: {
     loginErrors() {
@@ -107,7 +107,7 @@ export default {
           password: this.password
         },
         withCredentials: true,
-        url: "http://localhost:3000/api/v1/user/login"
+        url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/login`
       })
         .then(res => {
           this.loading = false;
