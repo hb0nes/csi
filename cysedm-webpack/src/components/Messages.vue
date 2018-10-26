@@ -6,8 +6,6 @@
           <v-toolbar color="blue lighten-5">
             <v-toolbar-title>Conversations</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-title>Contacts</v-toolbar-title>
-            <v-spacer></v-spacer>
             <v-btn icon>
               <v-icon>search</v-icon>
             </v-btn>
