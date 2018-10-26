@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer width="500" app clipped v-model="drawer">
+    <v-navigation-drawer app clipped v-model="drawer">
       <v-layout>
         <v-dialog v-model="dialog" max-width="500px">
           <v-card>
@@ -44,10 +44,7 @@
           <v-toolbar color="blue lighten-5">
             <v-toolbar-title>Conversations</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="dialog = true">
-              <v-icon>create</v-icon>
-            </v-btn>
-            <v-btn icon>
+            <v-btn @click="dialog = true" icon>
               <v-icon>search</v-icon>
             </v-btn>
           </v-toolbar>
@@ -119,6 +116,10 @@ export default {
   name: "Messages",
   data() {
     return {
+      window: {
+        width: 0,
+        height: 0
+      },
       isConnected: false,
       partners: [],
       messages: [],
@@ -158,6 +159,10 @@ export default {
     }
   },
   methods: {
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
     addUser() {
       if (this.userSelected) {
         let unique = true;
@@ -274,7 +279,9 @@ export default {
         }:3000/api/v1/message/read/${partner}`
       })
         .then(res => {
-          toggleDrawer();
+          if (this.window.width < 600) {
+            this.toggleDrawer();
+          }
           this.messages = res.data;
           document.getElementById("msgBox").focus();
           this.scrollBottom();
@@ -330,9 +337,14 @@ export default {
   created() {
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
   },
   beforeDestroy() {
     this.$eventHub.$off("toggleDrawer");
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
   }
 };
 </script>
