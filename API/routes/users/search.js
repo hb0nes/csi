@@ -18,7 +18,7 @@ module.exports = [
                 const Op = Db.Sequelize.Op;
                 // Search for a user by username or email
                 let result = await Db.User.findOne({
-                    attributes: {exclude: ['admin', 'password', 'created']},
+                    attributes: ['firstname', 'lastname', 'status']/*{exclude: ['admin', 'password', 'created']}*/,
                     where: {
                         [Op.and]: [
                         { [Op.or]: [{ "username": req.params.name }, { "email": req.params.name }] },
