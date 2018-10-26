@@ -20,7 +20,7 @@
               <p v-if="searchMsg.length > 0">{{ searchMsg }}</p>
               <v-list v-if="searchResult.length > 0" two-line>
                 <template v-for="(item, index) in searchResult">
-                  <v-list-tile :key="index" avatar @click="addUser">
+                  <v-list-tile :key="index" avatar @click="userSelected = !userSelected">
                     <v-list-tile-avatar>
                       <img :src="item.avatar">
                     </v-list-tile-avatar>
@@ -28,12 +28,15 @@
                       <v-list-tile-title>{{ item.firstName }} {{ item.lastName }}</v-list-tile-title>
                       <v-list-tile-sub-title>{{ item.status }}</v-list-tile-sub-title>
                     </v-list-tile-content>
+                    <v-list-tile-action v-if="userSelected">
+                      <v-icon>check</v-icon>
+                    </v-list-tile-action>
                   </v-list-tile>
                 </template>
               </v-list>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" flat @click="dialog=false;searchResult=[]; search=''">OK</v-btn>
+              <v-btn color="primary" flat @click="addUser">OK</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -125,8 +128,9 @@ export default {
       drawer: true,
       msgContent: "",
       search: "",
-      searchResult: {},
-      searchMsg: ""
+      searchResult: [],
+      searchMsg: "",
+      userSelected: false
     };
   },
   sockets: {
@@ -155,10 +159,15 @@ export default {
   },
   methods: {
     addUser() {
-      return;
+      this.dialog= false;
+      this.searchResult=[]; 
+      this.search='';
+      if (this.userSelected) {
+        this.partners.push(this.searchResult[0]);
+      }
     },
     // Find a user
-    searchUser(username) {
+    /*searchUser(username) {
       // Bij een axios catch
       if (username.toLowerCase() !== "robert") {
         this.searchResult = [];
@@ -177,6 +186,23 @@ export default {
           }
         ];
       }
+    },*/
+    searchUser(username) {
+      this.axios({
+        method: "GET",
+        withCredentials: true,
+        url: `http://${
+          process.env.VUE_APP_SERVERNAME
+        }:3000/api/v1/user/list/${username.toLowerCase()}`
+      })
+        .then(res => {
+          this.searchResult.push(res.data);
+          this.searchMsg = "";
+        })
+        .catch(() => {
+          this.searchResult = [];
+          this.searchMsg = "No users found.";
+        });
     },
     // Scroll to last message
     scrollBottom() {

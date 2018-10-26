@@ -11,7 +11,7 @@ module.exports = [
     {
         // Expects either a username alone or an added specific property/field. Multiple fields, multiple calls.
         method: 'GET',
-        path: '/api/v1/user/{username}/{field?}',
+        path: '/api/v1/user/{username}/{field}',
         config: {
             auth: {
                 strategy: 'jwt',
