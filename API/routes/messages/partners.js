@@ -20,7 +20,7 @@ module.exports = [
                 let username = request.auth.credentials.username;
                 let results = await db.sequelize.query(`
                 SELECT DISTINCT username, firstName, lastName, status, avatar
-                FROM users u, messages m
+                FROM Users u, Messages m
                 WHERE
                     (u.username = m.sender AND m.receiver = ?)
                 OR
