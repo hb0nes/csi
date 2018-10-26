@@ -28,9 +28,9 @@ const validate = async function (decoded, request) {
     catch (err) {
         l.error('Failed Authentication.', err);
     }
-    await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
-    await db.User.sync({ force: true });
-    db.Message.sync({ force: true });
+    // await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
+    await db.User.sync({ force: false });
+    db.Message.sync({ force: false });
 
     // HAPI server
     const server = Hapi.server({
