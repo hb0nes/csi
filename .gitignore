@@ -9,8 +9,6 @@ node_modules
 # local env files
 .env.local
 .env.*.local
-./API/.env
-./ssl/*
 
 # Log files
 npm-debug.log*
