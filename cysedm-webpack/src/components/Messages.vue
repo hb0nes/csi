@@ -10,7 +10,7 @@
             </v-toolbar>
             <v-card-text>
               <v-text-field
-                label="Search"
+                label="Search User"
                 append-icon="search"
                 @click:append="searchUser(search)"
                 @keyup.enter="searchUser(search)"
