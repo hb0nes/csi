@@ -159,34 +159,22 @@ export default {
   },
   methods: {
     addUser() {
-      this.dialog= false;
-      this.searchResult=[]; 
-      this.search='';
       if (this.userSelected) {
-        this.partners.push(this.searchResult[0]);
-      }
-    },
-    // Find a user
-    /*searchUser(username) {
-      // Bij een axios catch
-      if (username.toLowerCase() !== "robert") {
-        this.searchResult = [];
-        this.searchMsg = "No users found.";
-      } else {
-        this.searchMsg = "";
-        this.searchResult = [
-          {
-            username: "Robert",
-            firstName: "Robert",
-            lastName: "Knook",
-            avatar:
-              "https://openclipart.org/image/2400px/svg_to_png/202776/pawn.png",
-            email: "robertjanknook@gmail.nl",
-            status: "Ik ben awesome."
+        let unique = true;
+        this.partners.forEach(partner => {
+          if (partner.partner === this.searchResult[0].partner) {
+            unique = false;
           }
-        ];
+        });
+        if (unique) {
+          this.partners.unshift(this.searchResult[0]);
+        }
       }
-    },*/
+      this.userSelected = false;
+      this.searchResult = [];
+      this.search = "";
+      this.dialog = false;
+    },
     searchUser(username) {
       this.axios({
         method: "GET",
@@ -196,6 +184,7 @@ export default {
         }:3000/api/v1/user/list/${username.toLowerCase()}`
       })
         .then(res => {
+          this.searchResult = [];
           this.searchResult.push(res.data);
           this.searchMsg = "";
         })
