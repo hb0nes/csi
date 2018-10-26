@@ -10,10 +10,13 @@
             </v-toolbar>
             <v-card-text>
               <v-text-field
+                id="searchBox"
+                autofocus
                 label="Search User"
                 append-icon="search"
                 @click:append="searchUser(search)"
                 @keyup.enter="searchUser(search)"
+                @keyup.esc="dialog=false"
                 v-model="search"
                 solo
               ></v-text-field>
@@ -36,7 +39,9 @@
               </v-list>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" flat @click="addUser">OK</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn block color="primary" :disabled="!userSelected" flat @click="addUser">OK</v-btn>
+              <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -44,7 +49,7 @@
           <v-toolbar color="blue lighten-5">
             <v-toolbar-title>Conversations</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn @click="dialog = true" icon>
+            <v-btn @click="dialog = true; focusSearch()" icon>
               <v-icon>search</v-icon>
             </v-btn>
           </v-toolbar>
@@ -163,6 +168,9 @@ export default {
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
     },
+    focusSearch(){
+      setTimeout(()=> {document.getElementById("searchBox").focus()}, 200);
+    },
     addUser() {
       if (this.userSelected) {
         let unique = true;
@@ -178,9 +186,13 @@ export default {
       this.userSelected = false;
       this.searchResult = [];
       this.search = "";
+      this.searchMsg = "";
       this.dialog = false;
     },
     searchUser(username) {
+      if (this.search.length < 1) {
+        return
+      }
       this.axios({
         method: "GET",
         withCredentials: true,
@@ -280,7 +292,7 @@ export default {
       })
         .then(res => {
           if (this.window.width < 600) {
-            this.toggleDrawer();
+            this.drawer = false;
           }
           this.messages = res.data;
           document.getElementById("msgBox").focus();

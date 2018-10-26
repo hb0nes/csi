@@ -27,6 +27,9 @@ module.exports = [
                     },                   
                     order: Db.Sequelize.col('username')
                 })
+                if (!result) {
+                    return Boom.badRequest('No results found.');
+                }
                 return h.response(result).code(200);         
             } catch (err) {
                 return Boom.badImplementation(`Could not load users. Error: ${err}`)
