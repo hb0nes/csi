@@ -6,6 +6,8 @@
           <v-toolbar color="blue lighten-5">
             <v-toolbar-title>Conversations</v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-toolbar-title>Contacts</v-toolbar-title>
+            <v-spacer></v-spacer>
             <v-btn icon>
               <v-icon>search</v-icon>
             </v-btn>
@@ -104,6 +106,9 @@ export default {
         container.scrollTop = container.scrollHeight;
       });
     },
+    alert(){
+      alert("BLA")
+    },
     toggleDrawer() {
       this.drawer = !this.drawer;
     },
@@ -111,11 +116,14 @@ export default {
     sendMsg() {
       if (this.msgContent.length > 0 && this.currentUser) {
         // Add your sent message to the page without doing another API call
+        
+        let dt = new Date()
+        let offset = dt.getTimezoneOffset();
         this.messages.push({
           sender: this.currentUser,
           receiver: this.currentPartner,
           content: this.msgContent,
-          datetime: moment(new Date(), "YYYY-MM-DD HH:mm:ss")
+          datetime: moment(dt).add(offset, "m").format("YYYY-MM-DD HH:mm:ss")
         });
         // Clear input field
         let msg = this.msgContent;
@@ -194,14 +202,14 @@ export default {
       var date = new Date();
       let offset = date.getTimezoneOffset();
       let dt = moment(datetime, "YYYY-MM-DD HH:mm:ss");
-      return moment(dt)/*.add()(-offset, "m")*/.format("l");
+      return moment(dt).add(-offset, "m").format("l");
     },
     getTime(datetime){
       moment.locale('nl');
       var date = new Date();     
       let offset = date.getTimezoneOffset();
       let dt = moment(datetime, "YYYY-MM-DD HH:mm:ss");
-      return moment(dt)/*.add()add(-offset, "m").*/.format("HH:mm:ss");
+      return moment(dt).add(-offset, "m").format("HH:mm");
     },
   },
   computed: {
@@ -254,6 +262,7 @@ export default {
   box-shadow: 0 -5px 10px -5px rgba(0, 0, 0, 0.2);
 }
 .date {
+  color: grey;
   text-align: center;
   padding: 10px;
   font-size: 1em;
