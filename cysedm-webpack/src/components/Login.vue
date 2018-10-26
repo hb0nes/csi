@@ -10,7 +10,7 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
-                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && logIn()">
+                <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && reqFullscreen(); logIn()">
                   <v-text-field
                     v-model="login"
                     :error-messages="loginErrors"
