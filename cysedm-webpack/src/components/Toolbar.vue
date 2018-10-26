@@ -14,7 +14,6 @@
       transition="scale-transition"
       type="success"
       icon="check_circle"
-      dismissible
     >You've succesfully logged out!</v-alert>
     <v-alert
       style="position: absolute; top: 62px;"
@@ -22,7 +21,6 @@
       transition="scale-transition"
       type="error"
       icon="warning"
-      dismissible
     >Error logging out: {{err}}!</v-alert>
 
     <!-- Logout button -->
@@ -57,10 +55,12 @@ export default {
               this.$store.commit("users/logout");
               this.$router.push("login");
               this.alertSuccess = true;
-              setTimeout(function(){ this.alertSuccess = false; }, 3000);
+              setTimeout(()=>{ this.alertSuccess = false; }, 2000);
             } catch (err) {
               this.err = err;
               this.alertFail = true;
+              setTimeout(()=>{ this.alertFail = false; }, 2000);
+
             }
           }
         }
