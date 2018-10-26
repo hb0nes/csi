@@ -23,14 +23,14 @@ module.exports = [
                 FROM
                 (
                     SELECT DISTINCT(receiver) AS partner
-                    FROM messages
+                    FROM Messages
                     WHERE sender = ?
                     UNION 
                     SELECT DISTINCT(sender) as partner
-                    FROM messages
+                    FROM Messages
                     WHERE receiver = ?
                 ) partners
-                INNER JOIN users u
+                INNER JOIN Users u
                 ON partners.partner = u.username;`, { replacements: [username,username], type: db.sequelize.QueryTypes.SELECT});
                 if (!results) {
                     return h.response(partners).code(200);              
