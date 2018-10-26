@@ -54,7 +54,7 @@
           <v-list two-line>
             <!-- Template voor repeterend item -->
             <template v-for="(partner, index) in partners">
-              <v-list-tile ripple :key="partner.name" avatar @click="getMessages(partner.partner); toggleDrawer">
+              <v-list-tile ripple :key="partner.name" avatar @click="getMessages(partner.partner)">
                 <v-list-tile-avatar>
                   <img :src="partner.avatar">
                 </v-list-tile-avatar>
@@ -274,6 +274,7 @@ export default {
         }:3000/api/v1/message/read/${partner}`
       })
         .then(res => {
+          toggleDrawer();
           this.messages = res.data;
           document.getElementById("msgBox").focus();
           this.scrollBottom();
