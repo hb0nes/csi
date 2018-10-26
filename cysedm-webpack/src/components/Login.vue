@@ -48,8 +48,9 @@
                     :disabled="!valid || loading"
                     block
                     color="primary"
-                    @click="logIn"
+                    @click="reqFullscreen();logIn()"
                   >Login</v-btn>
+                  <!-- <v-btn @click="reqFullscreen()">Go Fullscreen</v-btn> -->
                 </v-form>
                 <v-btn dark block color="secondary" to="/forgot">Forgot password</v-btn>
                 <v-btn block outline color="primary" to="/register">Register</v-btn>
@@ -97,6 +98,16 @@ export default {
     }
   },
   methods: {
+    reqFullscreen() {
+      let app = document.getElementById("app");
+      if (app.requestFullscreen) {
+        app.requestFullscreen();
+      } else if (app.mozRequestFullScreen) {
+        app.mozRequestFullScreen();
+      } else if (app.webkitRequestFullscreen) {
+        app.webkitRequestFullscreen();
+      }
+    },
     logIn() {
       this.loader = "loading";
       this.$store.commit("users/auth_request");
@@ -114,7 +125,7 @@ export default {
           this.$store.commit("users/auth_success", res.data);
           this.loginRes = true;
           this.loginMsg = res.data;
-          this.$router.push('messages');
+          this.$router.push("messages");
         })
         .catch(err => {
           this.loading = false;
