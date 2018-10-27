@@ -2,10 +2,8 @@ csi.log
 error.log
 
 .DS_Store
-node_modules
-/dist
 dist
-cysedm-webpack/dist
+node_modules
 
 # local env files
 .env.local
