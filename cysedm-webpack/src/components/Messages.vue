@@ -219,12 +219,16 @@ export default {
     },
     // Scroll to last message
     scrollBottom() {
+      let timeout = 50;
+       if (this.window.width < 600) {
+         timeout = 300;
+       }
       setTimeout(()=>{ 
         // this.$nextTick(function() {
         var container = this.$refs.chatContainer;
         container.scrollTop = container.scrollHeight;
       // });
-      }, 500);
+      }, timeout);
     },
     toggleDrawer() {
       this.drawer = !this.drawer;
