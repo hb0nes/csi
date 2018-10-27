@@ -5,6 +5,8 @@ error.log
 .DS_Store
 node_modules
 /dist
+dist
+cysedm-webpack/dist
 
 # local env files
 .env.local
