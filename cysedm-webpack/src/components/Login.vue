@@ -50,7 +50,6 @@
                     color="primary"
                     @click="reqFullscreen();logIn()"
                   >Login</v-btn>
-                  <!-- <v-btn @click="reqFullscreen()">Go Fullscreen</v-btn> -->
                 </v-form>
                 <v-btn dark block color="secondary" to="/forgot">Forgot password</v-btn>
                 <v-btn block outline color="primary" to="/register">Register</v-btn>
