@@ -205,7 +205,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: `http://${
+        url: `${
           process.env.VUE_APP_SERVERNAME
         }:3000/api/v1/user/list/${username.toLowerCase()}`
       })
@@ -262,7 +262,7 @@ export default {
             receiver: this.currentPartner
           },
           withCredentials: true,
-          url: `http://${
+          url: `${
             process.env.VUE_APP_SERVERNAME
           }:3000/api/v1/message/create`
         })
@@ -279,7 +279,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: `http://${
+        url: `${
           process.env.VUE_APP_SERVERNAME
         }:3000/api/v1/message/partners`
       })
@@ -298,7 +298,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: `http://${
+        url: `${
           process.env.VUE_APP_SERVERNAME
         }:3000/api/v1/message/read/${partner}`
       })

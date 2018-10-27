@@ -47,7 +47,7 @@ const validate = async function (decoded, request) {
         },
         routes: {
             cors: {
-                origin: ['http://localhost:8080', 'http://b-it-s.nl', 'http://www.b-it-s.nl'],
+                origin: ['http://localhost:8080', 'https://b-it-s.nl', 'https://www.b-it-s.nl'],
                 credentials: true
             }
         }

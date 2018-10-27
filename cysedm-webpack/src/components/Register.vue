@@ -227,7 +227,7 @@ export default {
           password: this.password
         },
         withCredentials: true,
-        url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/create`
+        url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/create`
       })
         .then(res => {
           this.loading = false;

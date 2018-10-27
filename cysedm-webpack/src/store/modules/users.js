@@ -36,7 +36,7 @@ const mutations = {
     logout(state) {
         state.status = '';
         state.user = {};
-        axios({ method: "GET", withCredentials: true, url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/unstate` }).catch(() => { })
+        axios({ method: "GET", withCredentials: true, url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/unstate` }).catch(() => { })
     },
     validate(state) {
         axios({
@@ -45,7 +45,7 @@ const mutations = {
                 user: state.user
             },
             withCredentials: true,
-            url: `http://${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/validate`
+            url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/validate`
         }).catch(() => {
         });
     }
