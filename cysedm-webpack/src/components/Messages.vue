@@ -359,7 +359,15 @@ export default {
     this.getConversations();
   },
   created() {
-    push.Permission.request();
+    try {
+    push.Permission.request(()=>{
+      alert("Permission granted.");
+    }, () => {
+      alert("Permission denied.");
+    });
+    } catch (err) {
+      alert(err)
+    }
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
     window.addEventListener("resize", this.handleResize);
