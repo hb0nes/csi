@@ -119,6 +119,7 @@
 
 <script>
 import moment from "moment";
+import push from 'push.js';
 import { setTimeout } from 'timers';
 export default {
   name: "Messages",
@@ -150,6 +151,7 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
+      push.create(`New message from ${sender}!`)
       // Notify receiver
       document.getElementById("audio").play();
       // Update current messages if you're staring at the conversation with the sender
@@ -357,6 +359,7 @@ export default {
     this.getConversations();
   },
   created() {
+    push.Permission.request();
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
     window.addEventListener("resize", this.handleResize);
