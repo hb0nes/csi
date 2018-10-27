@@ -151,7 +151,9 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
-      push.create(`New message from ${sender}!`);
+      push.create(`New message from ${sender}!`, {
+        body: `${sender} has sent you a message.`
+      });
       // Notify receiver
       document.getElementById("audio").play();
       // Update current messages if you're staring at the conversation with the sender
