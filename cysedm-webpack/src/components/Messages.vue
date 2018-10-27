@@ -423,4 +423,7 @@ export default {
   background-color: #e8f5e9;
   float: right;
 }
+body {
+  background-color: #f2f2f2;
+}
 </style>
