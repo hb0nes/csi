@@ -95,6 +95,7 @@
       </div>
       <div class="typer">
         <input
+          @click="scrollBottom()"
           v-if="currentPartner"
           id="msgBox"
           v-model="msgContent"
@@ -149,7 +150,7 @@ export default {
     },
     message: function(sender) {
       // Notify receiver
-      document.getElementById('audio').play();
+      document.getElementById("audio").play();
       // Update current messages if you're staring at the conversation with the sender
       if (this.currentPartner === sender) {
         this.getMessages(sender);
@@ -171,8 +172,10 @@ export default {
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
     },
-    focusSearch(){
-      setTimeout(()=> {document.getElementById("searchBox").focus()}, 200);
+    focusSearch() {
+      setTimeout(() => {
+        document.getElementById("searchBox").focus();
+      }, 200);
     },
     addUser() {
       if (this.userSelected) {
@@ -194,7 +197,7 @@ export default {
     },
     searchUser(username) {
       if (this.search.length < 1) {
-        return
+        return;
       }
       this.axios({
         method: "GET",
@@ -353,6 +356,7 @@ export default {
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
     window.addEventListener("resize", this.handleResize);
+
     this.handleResize();
   },
   beforeDestroy() {
