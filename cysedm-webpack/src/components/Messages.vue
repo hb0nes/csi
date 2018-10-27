@@ -119,8 +119,8 @@
 
 <script>
 import moment from "moment";
-import push from 'push.js';
-import { setTimeout } from 'timers';
+import push from "push.js";
+import { setTimeout } from "timers";
 export default {
   name: "Messages",
   data() {
@@ -151,7 +151,7 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
-      push.create(`New message from ${sender}!`)
+      push.create(`New message from ${sender}!`);
       // Notify receiver
       document.getElementById("audio").play();
       // Update current messages if you're staring at the conversation with the sender
@@ -222,14 +222,14 @@ export default {
     // Scroll to last message
     scrollBottom() {
       let timeout = 50;
-       if (this.window.width < 600) {
-         timeout = 300;
-       }
-      setTimeout(()=>{ 
+      if (this.window.width < 600) {
+        timeout = 300;
+      }
+      setTimeout(() => {
         // this.$nextTick(function() {
         var container = this.$refs.chatContainer;
         container.scrollTop = container.scrollHeight;
-      // });
+        // });
       }, timeout);
     },
     toggleDrawer() {
@@ -360,13 +360,16 @@ export default {
   },
   created() {
     try {
-    push.Permission.request(()=>{
-      alert("Permission granted.");
-    }, () => {
-      alert("Permission denied.");
-    });
+      push.Permission.request(
+        success => {
+          return;
+        },
+        denied => {
+          return;
+        }
+      );
     } catch (err) {
-      alert(err)
+      return;
     }
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
