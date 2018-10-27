@@ -5,6 +5,11 @@ require('dotenv').config({ path: __dirname + "/.env" });
 const db = require('./models')
 const routes = require('./routes');
 const l = require('./logger');
+const fs = require('fs');
+
+// Certificate
+const privateKey = fs.readFileSync(__dirname + '/ssl/privkey.pem', 'utf8');
+const certificate = fs.readFileSync(__dirname + '/ssl/cert.pem', 'utf8');
 
 
 // Credential validation
@@ -36,6 +41,10 @@ const validate = async function (decoded, request) {
     const server = Hapi.server({
         port: process.env.PORT || 3000,
         host: '0.0.0.0',
+        tls: {
+            key: privateKey,
+            cert: certificate
+        },
         routes: {
             cors: {
                 origin: ['http://localhost:8080', 'http://b-it-s.nl', 'http://www.b-it-s.nl'],
