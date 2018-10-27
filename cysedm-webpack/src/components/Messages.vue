@@ -119,7 +119,30 @@
 
 <script>
 import moment from "moment";
-import push from "push.js";
+import Push from "push.js";
+import PushFCM from "push-fcm-plugin";
+Push.extend(PushFCM);
+const pushConfig = {
+  apiKey: "AIzaSyBXL2Dvw1lHNSpf2otmfynvRizHPiHkkoM",
+  authDomain: "cysedm.firebaseapp.com",
+  databaseURL: "https://cysedm.firebaseio.com",
+  projectId: "cysedm",
+  storageBucket: "cysedm.appspot.com",
+  messagingSenderId: "1062967995444"
+};
+Push.config({
+  FCM: pushConfig
+});
+Push.FCM().then(function(FCM) {
+    FCM.getToken().then(function(token) {
+        console.log("Initialized with token " + token);
+    }).catch(function(tokenError) {
+       throw tokenError; 
+    });
+}).catch(function(initError) {
+   throw initError; 
+});
+
 import { setTimeout } from "timers";
 export default {
   name: "Messages",
@@ -151,7 +174,7 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
-      push.create(`New message from ${sender}!`, {
+      Push.create(`New message from ${sender}!`, {
         body: `${sender} has sent you a message.`
       });
       // Notify receiver
@@ -228,10 +251,8 @@ export default {
         timeout = 300;
       }
       setTimeout(() => {
-        // this.$nextTick(function() {
         var container = this.$refs.chatContainer;
         container.scrollTop = container.scrollHeight;
-        // });
       }, timeout);
     },
     toggleDrawer() {
@@ -264,9 +285,7 @@ export default {
             receiver: this.currentPartner
           },
           withCredentials: true,
-          url: `${
-            process.env.VUE_APP_SERVERNAME
-          }:3000/api/v1/message/create`
+          url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/create`
         })
           .then(() => {})
           .catch(err => {
@@ -281,9 +300,7 @@ export default {
       this.axios({
         method: "GET",
         withCredentials: true,
-        url: `${
-          process.env.VUE_APP_SERVERNAME
-        }:3000/api/v1/message/partners`
+        url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/partners`
       })
         .then(res => {
           this.partners = res.data;
@@ -362,7 +379,7 @@ export default {
   },
   created() {
     try {
-      push.Permission.request(
+      Push.Permission.request(
         success => {
           return success;
         },
