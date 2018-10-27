@@ -224,10 +224,7 @@ export default {
         var container = this.$refs.chatContainer;
         container.scrollTop = container.scrollHeight;
       // });
-      }, 150);
-    },
-    alert() {
-      alert("BLA");
+      }, 1000);
     },
     toggleDrawer() {
       this.drawer = !this.drawer;
