@@ -8,6 +8,9 @@ const Path = require('path');
 const privateKey = fs.readFileSync(__dirname + '/ssl/privkey.pem', 'utf8');
 const certificate = fs.readFileSync(__dirname + '/ssl/cert.pem', 'utf8');
 
+const http = Hapi.server(80);
+
+
 const server = Hapi.server({
     tls: {
         key: privateKey,
@@ -15,10 +18,17 @@ const server = Hapi.server({
     },
     port: 443
 });
+
 const start = async () => {
 
     await server.register(require('inert'));
-
+    await http.register({
+        register: require('hapi-gate'),
+        options: {
+            https: true,
+            www: true
+        }
+    });
     server.route({
         method: 'GET',
         path: '/{param*}',
@@ -28,7 +38,7 @@ const start = async () => {
             }
         }
     });
-
+    await http.start();
     await server.start();
 
     console.log('Server running at:', server.info.uri);
