@@ -144,6 +144,11 @@ export default {
       setTimeout(() => (this[l] = false), 3000);
       this.loader = null;
     }
+  },
+  beforeMount(){
+    if (this.$store.getters["users/isLoggedIn"]) {
+      this.$router.push("messages");
+    }
   }
 };
 </script>

@@ -29,7 +29,6 @@
     "jsonwebtoken": "^8.3.0",
     "mysql2": "^1.6.1",
     "path": "^0.12.7",
-    "push.js": "^1.0.9",
     "sequelize": "^4.39.0",
     "socket.io": "^2.1.1",
     "vision": "^5.4.0",
