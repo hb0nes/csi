@@ -38,13 +38,19 @@ const validate = async function (decoded, request) {
     db.Message.sync({ force: false });
 
     // HAPI server
+    let tls = "";
+    if (process.env.ENV === "production") {
+        tls = {
+            key: privateKey,
+            cert: certificate
+        }
+    } else {
+        tls = false;
+    }
     const server = Hapi.server({
         port: process.env.PORT || 3000,
         host: '0.0.0.0',
-        tls: {
-            key: privateKey,
-            cert: certificate
-        },
+        tls: tls,
         routes: {
             cors: {
                 origin: ['http://localhost:8080', 'https://b-it-s.nl', 'https://www.b-it-s.nl'],
@@ -52,7 +58,7 @@ const validate = async function (decoded, request) {
             }
         }
     });
-    
+
     // Define socket that shares the port of HAPI and creates new rooms for each connection
     // to directly contact them.
     const io = require('socket.io')(server.listener);
