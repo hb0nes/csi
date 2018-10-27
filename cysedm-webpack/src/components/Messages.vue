@@ -362,10 +362,10 @@ export default {
     try {
       push.Permission.request(
         success => {
-          return;
+          return success;
         },
         denied => {
-          return;
+          return denied;
         }
       );
     } catch (err) {
