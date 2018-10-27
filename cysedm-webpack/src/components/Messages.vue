@@ -119,6 +119,7 @@
 
 <script>
 import moment from "moment";
+import { setTimeout } from 'timers';
 export default {
   name: "Messages",
   data() {
@@ -218,10 +219,12 @@ export default {
     },
     // Scroll to last message
     scrollBottom() {
-      this.$nextTick(function() {
+      setTimeout(()=>{ 
+        // this.$nextTick(function() {
         var container = this.$refs.chatContainer;
         container.scrollTop = container.scrollHeight;
-      });
+      // });
+      }, 150);
     },
     alert() {
       alert("BLA");
