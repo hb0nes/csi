@@ -25,7 +25,7 @@ const start = async () => {
 
     await server.register(require('inert'));
     await http.register({
-        register: require('hapi-gate'),
+        plugin: require('hapi-gate'),
         options: {
             https: true,
             www: true
