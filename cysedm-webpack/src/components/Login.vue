@@ -48,7 +48,7 @@
                     :disabled="!valid || loading"
                     block
                     color="primary"
-                    @click="reqFullscreen();logIn()"
+                    @click="logIn()"
                   >Login</v-btn>
                 </v-form>
                 <v-btn dark block color="secondary" to="/forgot">Forgot password</v-btn>
