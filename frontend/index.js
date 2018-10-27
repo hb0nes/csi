@@ -1,9 +1,19 @@
 'use strict';
+const fs = require('fs');
 
 const Hapi = require('hapi');
 const Path = require('path');
+
+// Certificate
+const privateKey = fs.readFileSync(__dirname + '/ssl/privkey.pem', 'utf8');
+const certificate = fs.readFileSync(__dirname + '/ssl/cert.pem', 'utf8');
+
 const server = Hapi.server({
-    port: 80
+    tls: {
+        key: privateKey,
+        cert: certificate
+    },
+    port: 443
 });
 const start = async () => {
 
