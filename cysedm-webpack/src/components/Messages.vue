@@ -176,7 +176,7 @@ export default {
     message: function(sender) {
       Push.create(`CyseDM`, {
         body: `${sender} has sent you a message.`,
-        icon: './public/favicon-32x32.png',
+        icon: './favicon-32x32.png',
         link: '/#/messages'
       });
       // Notify receiver
