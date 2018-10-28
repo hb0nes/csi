@@ -174,8 +174,10 @@ export default {
       this.isConnected = false;
     },
     message: function(sender) {
-      Push.create(`New message from ${sender}!`, {
-        body: `${sender} has sent you a message.`
+      Push.create(`CyseDM`, {
+        body: `${sender} has sent you a message.`,
+        icon: './public/favicon-32x32.png',
+        link: '/#/messages'
       });
       // Notify receiver
       document.getElementById("audio").play();
