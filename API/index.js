@@ -75,11 +75,9 @@ const validate = async function (decoded, request) {
     // Cookie settings
     server.state('token', {
         ttl: 24 * 60 * 60 * 1000,
-        isSecure: false,
+        isSecure: (process.env.ENV === "production"),
         isHttpOnly: true,
-        // isSameSite: false,
         isSameSite: 'Strict',
-        encoding: 'none',
         path: '/',
         clearInvalid: true,
         strictHeader: true
