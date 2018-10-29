@@ -19,13 +19,14 @@ module.exports = [
                 // Find all messages to/from user/'partner'
                 let username = request.auth.credentials.username;
                 let results = await db.sequelize.query(`
-                SELECT DISTINCT username as partner, firstName, lastName, status, avatar
+                SELECT username as partner, firstName, lastName, status, avatar
                 FROM Users u, Messages m
                 WHERE
                     (u.username = m.sender AND m.receiver = ?)
                 OR
                     (u.username = m.receiver AND m.sender = ?)
-                ORDER BY createdAt DESC`, { replacements: [username,username], type: db.sequelize.QueryTypes.SELECT});
+                GROUP BY username
+                ORDER BY max(createdAt) DESC`, { replacements: [username,username], type: db.sequelize.QueryTypes.SELECT});
                 if (!results) {
                     return h.response(partners).code(200);              
                 }
