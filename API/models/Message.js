@@ -11,6 +11,11 @@ module.exports = (sequelize, Sequelize) => {
         content: {
             type: Sequelize.STRING(9999),
             allowNull: false
+        },
+        unread: {
+            type: Sequelize.BOOLEAN,
+            alowNull: false,
+            defaultValue: true
         }
     }, {
             indexes: [

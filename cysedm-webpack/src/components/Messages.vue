@@ -53,10 +53,15 @@
               <v-icon>search</v-icon>
             </v-btn>
           </v-toolbar>
-          <v-list two-line>
+          <v-list two-line subheader>
             <!-- Template voor repeterend item -->
             <template v-for="(partner, index) in partners">
-              <v-list-tile ripple :key="partner.name" avatar @click="getMessages(partner.partner)">
+              <v-list-tile
+                ripple
+                :key="partner.name"
+                avatar
+                @click="getMessages(partner.partner, index);"
+              >
                 <v-list-tile-avatar>
                   <img :src="partner.avatar">
                 </v-list-tile-avatar>
@@ -66,6 +71,16 @@
                   >{{ partner.firstName }} {{partner.lastName}}</v-list-tile-title>
                   <v-list-tile-sub-title>{{ partner.status }}</v-list-tile-sub-title>
                 </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-btn
+                    small
+                    dark
+                    v-if="partner.unread > 0"
+                    color="red lighten-2"
+                    :key="index"
+                    icon
+                  >{{partner.unread}}</v-btn>
+                </v-list-tile-action>
               </v-list-tile>
               <v-divider inset :key="index"></v-divider>
             </template>
@@ -133,15 +148,19 @@ const pushConfig = {
 Push.config({
   FCM: pushConfig
 });
-Push.FCM().then(function(FCM) {
-    FCM.getToken().then(function(token) {
+Push.FCM()
+  .then(function(FCM) {
+    FCM.getToken()
+      .then(function(token) {
         console.log("Initialized with token " + token);
-    }).catch(function(tokenError) {
-       throw tokenError; 
-    });
-}).catch(function(initError) {
-   throw initError; 
-});
+      })
+      .catch(function(tokenError) {
+        throw tokenError;
+      });
+  })
+  .catch(function(initError) {
+    throw initError;
+  });
 
 import { setTimeout } from "timers";
 export default {
@@ -176,23 +195,27 @@ export default {
     message: function(sender) {
       Push.create(`CyseDM`, {
         body: `${sender} has sent you a message.`,
-        icon: './favicon-32x32.png',
-        link: '/#/messages'
+        icon: "./favicon-32x32.png",
+        link: "/#/messages",
+        tag: "newMessage"
       });
       // Notify receiver
       document.getElementById("audio").play();
       // Update current messages if you're staring at the conversation with the sender
-      if (this.currentPartner === sender) {
-        this.getMessages(sender);
-      }
-      // Check if this sender is currently in your conversation list. If not, reload that list.
-      let inList = false;
-      this.partners.forEach(p => {
-        if (p.partner === sender) {
-          inList = true;
+
+      // Check if this sender is currently in your conversation list.  If it is, put it on top and add an unread message.
+      // If not, reload the list.
+      const partnerIndex = this.partners.findIndex(x => x.partner === sender);
+      if (partnerIndex >= 0) {
+        if (this.currentPartner === sender) {
+          this.getMessages(sender);
+        } else {
+          this.partners[partnerIndex].unread++;
         }
-      });
-      if (!inList) {
+        this.partners = this.partners
+          .splice(partnerIndex, 1)
+          .concat(this.partners);
+      } else {
         this.getConversations();
       }
     }
@@ -208,16 +231,10 @@ export default {
       }, 200);
     },
     addUser() {
+      // Don't add if user is already in the list of conversations
       if (this.userSelected) {
-        let unique = true;
-        this.partners.forEach(partner => {
-          if (partner.partner === this.searchResult[0].partner) {
-            unique = false;
-          }
-        });
-        if (unique) {
-          this.partners.unshift(this.searchResult[0]);
-        }
+        const found = this.partners.find(x => x.partner === this.searchResult[0].partner)
+        if (!found) { this.partners.unshift(this.searchResult[0]); }
       }
       this.userSelected = false;
       this.searchResult = [];
@@ -275,6 +292,10 @@ export default {
             .add(offset, "m")
             .format("YYYY-MM-DD HH:mm:ss")
         });
+        // Add conversation to top
+        const found = this.partners.findIndex(x => x.partner === this.currentPartner);
+        this.partners = this.partners.splice(found, 1).concat(this.partners);
+        
         // Clear input field
         let msg = this.msgContent;
         this.msgContent = "";
@@ -314,7 +335,7 @@ export default {
         });
     },
     // Get all the messages for the conversation you just clicked
-    getMessages(partner) {
+    getMessages(partner, index) {
       this.currentPartner = partner;
       this.axios({
         method: "GET",
@@ -335,6 +356,22 @@ export default {
           if (err) {
             return err;
           }
+        });
+
+      // Clear unread messages
+      this.axios({
+        method: "PUT",
+        data: { partner: partner },
+        withCredentials: true,
+        url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/message/readmsg`
+      })
+        .then(() => {
+          if (index >= 0) {
+            this.partners[index].unread = 0;
+          }
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
     // Add correct message style for either sender or receiver
