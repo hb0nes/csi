@@ -486,8 +486,12 @@ export default {
   border-radius: 0.5em;
   max-width: 85%;
   font-size: 1.15em;
-  word-break: break-all;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+        hyphens: auto;
 }
 .partner {
   background-color: #e1f5fe;
