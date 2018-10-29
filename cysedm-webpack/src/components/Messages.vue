@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped v-model="drawer">
+    <v-navigation-drawer app mobile-break-point="700" clipped v-model="drawer">
       <v-layout>
         <v-dialog v-model="dialog" max-width="500px">
           <v-card>
@@ -249,8 +249,8 @@ export default {
     // Scroll to last message
     scrollBottom() {
       let timeout = 50;
-      if (this.window.width < 600) {
-        timeout = 300;
+      if (this.window.width < 700) {
+        timeout = 400;
       }
       setTimeout(() => {
         var container = this.$refs.chatContainer;
@@ -324,7 +324,7 @@ export default {
         }:3000/api/v1/message/read/${partner}`
       })
         .then(res => {
-          if (this.window.width < 600) {
+          if (this.window.width < 700) {
             this.drawer = false;
           }
           this.messages = res.data;
