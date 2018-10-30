@@ -90,13 +90,6 @@
     </v-navigation-drawer>
     <v-content style="font-size: 15px">
       <div class="chat-container" ref="chatContainer">
-          <v-chip color="primary" text-color="white" class="title" dark v-if="currentPartner" style="top:-4px;left: 50%; transform: translateX(-50%); position: absolute;"> 
-            <v-avatar>
-              <v-icon medium >account_circle</v-icon>
-            </v-avatar>
-            {{ currentPartner }}
-          </v-chip>
-
         <v-container grid-list-md>
           <v-layout row wrap="">
             <v-flex xs12 v-for="(msg, i) in messages" :key="i" v-bind:class="{ 'mt-3': i===0}">
@@ -349,6 +342,7 @@ export default {
     },
     // Get all the messages for the conversation you just clicked
     getMessages(partner, index) {
+      this.$eventHub.$emit("currentPartner", this.partners[index]);
       this.currentPartner = partner;
       this.axios({
         method: "GET",
@@ -497,7 +491,7 @@ export default {
 .message {
   padding: 10px;
   border-radius: 0.5em;
-  max-width: 85%;
+  max-width: 95%;
   font-size: 1.15em;
   word-wrap: break-word;
   overflow-wrap: break-word;
