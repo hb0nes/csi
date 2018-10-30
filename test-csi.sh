@@ -31,11 +31,11 @@ done
     http -b POST ${SERVER}/user/login password=${PASSWORDS[$i]} 
 
 # Login and store tokens
-ADMIN_TOKEN=$(http -h POST ${SERVER}/user/login login=b0nes password=12345678 | grep authorization | cut -d\  -f2 )
+ADMIN_TOKEN=$(http -h POST ${SERVER}/user/login login=b0nes password=12345678 | grep authorization | cut -d\  -f2 | tr -d '\r' )
 [ "$ADMIN_TOKEN" ] ||  echo "Token test failed."
-USER_TOKEN=$(http -h POST ${SERVER}/user/login login=user password=18273645 | grep authorization | cut -d\  -f2 )
+USER_TOKEN=$(http -h POST ${SERVER}/user/login login=user password=18273645 | grep authorization | cut -d\  -f2 | tr -d '\r' )
 [ "$USER_TOKEN" ] || echo "Username Token test failed."
-BUDROID_TOKEN=$(http -h POST ${SERVER}/user/login login=budroid password=12345678 | grep authorization | cut -d\  -f2 )
+BUDROID_TOKEN=$(http -h POST ${SERVER}/user/login login=budroid password=12345678 | grep authorization | cut -d\  -f2 | tr -d '\r' )
 echo "Admin Token: ${ADMIN_TOKEN}"
 echo "User Token: ${USER_TOKEN}"
 

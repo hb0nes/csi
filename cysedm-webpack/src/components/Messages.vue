@@ -90,9 +90,16 @@
     </v-navigation-drawer>
     <v-content style="font-size: 15px">
       <div class="chat-container" ref="chatContainer">
+          <v-chip color="primary" text-color="white" class="title" dark v-if="currentPartner" style="top:-4px;left: 50%; transform: translateX(-50%); position: absolute;"> 
+            <v-avatar>
+              <v-icon medium >account_circle</v-icon>
+            </v-avatar>
+            {{ currentPartner }}
+          </v-chip>
+
         <v-container grid-list-md>
           <v-layout row wrap="">
-            <v-flex xs12 v-for="(msg, i) in messages" :key="i">
+            <v-flex xs12 v-for="(msg, i) in messages" :key="i" v-bind:class="{ 'mt-3': i===0}">
               <template v-if="i == 0 || newDate(msg.datetime, messages[i-1].datetime)">
                 <div class="date">
                   {{getDate(msg.datetime)}}
@@ -233,8 +240,12 @@ export default {
     addUser() {
       // Don't add if user is already in the list of conversations
       if (this.userSelected) {
-        const found = this.partners.find(x => x.partner === this.searchResult[0].partner)
-        if (!found) { this.partners.unshift(this.searchResult[0]); }
+        const found = this.partners.find(
+          x => x.partner === this.searchResult[0].partner
+        );
+        if (!found) {
+          this.partners.unshift(this.searchResult[0]);
+        }
       }
       this.userSelected = false;
       this.searchResult = [];
@@ -293,9 +304,11 @@ export default {
             .format("YYYY-MM-DD HH:mm:ss")
         });
         // Add conversation to top
-        const found = this.partners.findIndex(x => x.partner === this.currentPartner);
+        const found = this.partners.findIndex(
+          x => x.partner === this.currentPartner
+        );
         this.partners = this.partners.splice(found, 1).concat(this.partners);
-        
+
         // Clear input field
         let msg = this.msgContent;
         this.msgContent = "";
@@ -449,7 +462,7 @@ export default {
   box-sizing: border-box;
   height: calc(100vh - 9.5rem);
   overflow-y: auto;
-  padding: 10px;
+  padding: 0px 10px 0px 10px;
   background-color: #f2f2f2;
 }
 .typer {
@@ -489,9 +502,9 @@ export default {
   word-wrap: break-word;
   overflow-wrap: break-word;
 
--webkit-hyphens: auto;
-   -moz-hyphens: auto;
-        hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
 }
 .partner {
   background-color: #e1f5fe;

@@ -6,20 +6,20 @@
     <v-spacer></v-spacer>
     
     <!-- alert -->
-    <v-alert
-      style="position: relative; top: 62px;"
+    <v-snackbar
+      top
+      multi-line
+      color="success"
+      timeout="3000"
       v-model="alertSuccess"
-      transition="scale-transition"
-      type="success"
-      icon="check_circle"
-    >You've succesfully logged out!</v-alert>
-    <v-alert
-      style="position: absolute; top: 62px;"
+    > You've succesfully logged out! </v-snackbar>
+    <v-snackbar
+      top
+      multi-line
+      color="error"
+      timeout="3000"
       v-model="alertFail"
-      transition="scale-transition"
-      type="error"
-      icon="warning"
-    >Error logging out: {{err}}!</v-alert>
+    > Error logging out! </v-snackbar>
 
     <!-- Logout button -->
     <v-menu v-if="isLoggedIn" offset-y>
