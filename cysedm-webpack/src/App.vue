@@ -17,7 +17,9 @@ export default {
   },
   // Check if localstorage hasn't been tampered with
   beforeMount() {
-    this.$store.commit("users/validate");
+    // Tijdelijk uitgezet om forgot password te kunnen testen
+    // !!!!!! Hoe krijgen we dit weer aan zonder de reset password optie om te laten vallen?
+    // this.$store.commit("users/validate");
   },
   // If a user's cookie or token has expired... Log this user out.
   created() {

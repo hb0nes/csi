@@ -1,5 +1,5 @@
 //bcrypt for saving pwds
-//const Bcrypt = require('bcrypt-nodejs')
+const Bcrypt = require('bcrypt-nodejs')
 // Models
 const Db = require('../../models')
 // Boom for errors
@@ -35,20 +35,20 @@ module.exports = [
                     const token = jwt.encode(payload, secret);
 
                     const transporter = nodemailer.createTransport({
+                        // TODO Met eigen domein
                         service: 'gmail',
                         auth: {
                             user: 'cysedm2018@gmail.com',
-                            // Dit moet natuurlijk wel ff anders...
                             pass: 'Varkens00!'
                         }
                     });
 
-                    const link = '<a href="http://localhost:8080/reset/' + payload.id + '/' + token + '">Reset password</a>'
+                    const link = '<a href="http://localhost:8080/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
                     const mailOptions = {
                         from: 'CyseDM',
                         sender: 'CyseDM',
-                        to: email,
-                        //to: 'robertjanbuddenbohmer@gmail.com',
+                        //to: email,
+                        to: 'robertjanbuddenbohmer@gmail.com',
                         subject: 'Reset password',
                         html: link
                     };
@@ -69,24 +69,45 @@ module.exports = [
                 }
             }
             catch (err) {
-                l.error('Resetting users password failed.', err);
-                return Boom.badImplementation(`Reset user failed. ${err}`);
+                l.error('Sending email failed.', err);
+                return Boom.badImplementation(`Sending email failed. ${err}`);
             }
         }
     },
     {
-        method: 'GET',
-        path: '/api/v1/user/reset/{id}/{token}',
+        method: 'POST',
+        path: '/api/v1/user/reset',
         config: { auth: false },
         handler: async (req, h) => {
             try {
-                console.log(req.params.id);
-                const secret = user.password + "-" + user.created;
-                const payload = jwt.decode(req.params.token, secret);
+                const id = req.payload.id;
+                let user = await Db.User.findOne({
+                    where: {
+                        username: id
+                    }
+                })
+                if (user != null) {
+                    // En alweer een geheimpje maken...
+                    const secret = user.password + "-" + user.created;
+                    const payload = jwt.decode(req.payload.token, secret);
+                    if (payload.id === id) {
+                        const hash = Bcrypt.hashSync(req.payload.password);
+                        Db.User.update({ password: hash }, {
+                            where: {
+                                username: id
+                            }
+                        })
+                        console.log("PW: " + pw);
+                    } else {
+                        return Boom.badRequest('The is a problem with your identity');
+                    }
+                } else {
+                    return Boom.badRequest('No account found');
+                }
                 return Boom.badRequest('Varken!');
             } catch (err) {
                 l.error('Resetting users password failed.', err);
-                return Boom.badImplementation(`Reset user failed. ${err}`);
+                return Boom.badImplementation(`Reset password failed. ${err}`);
             }
         }
     }
