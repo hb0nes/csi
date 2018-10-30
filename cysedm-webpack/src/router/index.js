@@ -49,12 +49,5 @@ export default new Router({
       component: reset,
       props: true
     },
-    // {
-    //   path: '/reset',
-    //   name: 'reset',
-    //   component: reset
-    // }
-
-
   ]
 })
