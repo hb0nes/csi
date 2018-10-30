@@ -13,7 +13,6 @@ const jwt = require('jwt-simple');
 
 module.exports = [
     {
-
         method: 'POST',
         path: '/api/v1/user/resetpassword',
         config: { auth: false },
@@ -89,7 +88,15 @@ module.exports = [
                 if (user != null) {
                     // En alweer een geheimpje maken...
                     const secret = user.password + "-" + user.created;
-                    const payload = jwt.decode(req.payload.token, secret);
+
+                    try {
+                        const payload = jwt.decode(req.payload.token, secret);
+                    } catch (error) {
+                        console.log(error.message);
+                        if (error.message == "Signature verification failed")
+                            return Boom.badRequest('Your reset-link has been expired');
+                    }
+
                     if (payload.id === id) {
                         const hash = Bcrypt.hashSync(req.payload.password);
                         Db.User.update({ password: hash }, {
@@ -97,14 +104,13 @@ module.exports = [
                                 username: id
                             }
                         })
-                        console.log("PW: " + pw);
+                        return h.response('Your password is successfully changed').code(202);
                     } else {
-                        return Boom.badRequest('The is a problem with your identity');
+                        return Boom.badRequest('There is a problem with your identity');
                     }
                 } else {
                     return Boom.badRequest('No account found');
                 }
-                return Boom.badRequest('Varken!');
             } catch (err) {
                 l.error('Resetting users password failed.', err);
                 return Boom.badImplementation(`Reset password failed. ${err}`);

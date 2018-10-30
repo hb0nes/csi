@@ -201,7 +201,7 @@ export default {
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.minLength &&
         errors.push("Password must be at least 8 characters long");
-      !this.$v.email.required && errors.push("Password is required.");
+      !this.$v.password.required && errors.push("Password is required.");
       return errors;
     },
     confirmErrors() {
