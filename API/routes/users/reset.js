@@ -61,9 +61,9 @@ module.exports = [
                     });
 
                     // TODO geen bad request
-                    return h.response('An email has been send to your varkensemail').code(200);
+                    return h.response('An email has been send to your email').code(200);
                 } else {
-                    return Boom.badRequest('There is no account with this email address. Varken!');
+                    return Boom.badRequest('There is no account with this email address.');
 
                 }
             }
@@ -88,14 +88,7 @@ module.exports = [
                 if (user != null) {
                     // En alweer een geheimpje maken...
                     const secret = user.password + "-" + user.created;
-
-                    try {
-                        const payload = jwt.decode(req.payload.token, secret);
-                    } catch (error) {
-                        console.log(error.message);
-                        if (error.message == "Signature verification failed")
-                            return Boom.badRequest('Your reset-link has been expired');
-                    }
+                    const payload = jwt.decode(req.payload.token, secret);
 
                     if (payload.id === id) {
                         const hash = Bcrypt.hashSync(req.payload.password);
@@ -112,6 +105,10 @@ module.exports = [
                     return Boom.badRequest('No account found');
                 }
             } catch (err) {
+                if (err.message == "Signature verification failed") {
+                    return Boom.badRequest('Your reset-link has been expired');
+                }
+
                 l.error('Resetting users password failed.', err);
                 return Boom.badImplementation(`Reset password failed. ${err}`);
             }
