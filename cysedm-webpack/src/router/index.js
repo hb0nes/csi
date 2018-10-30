@@ -5,6 +5,7 @@ import register from '@/components/Register'
 import forgot from '@/components/Forgot'
 import notFound from '@/components/NotFound'
 import messages from '@/components/Messages'
+import reset from '@/components/Reset'
 
 Vue.use(Router)
 
@@ -37,6 +38,12 @@ export default new Router({
       path: '/messages',
       name: 'messages',
       component: messages
+    },
+    {
+      path: '/reset/:id/:token',
+      component: reset,
+      props: true
     }
+
   ]
 })
