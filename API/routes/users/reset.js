@@ -42,7 +42,9 @@ module.exports = [
                         }
                     });
 
-                    const link = '<a href="http://localhost:8080/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
+                    let server = process.env.VUE_APP_SERVERNAME;
+
+                    const link = '<a href="'+server+':8080/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
                     const mailOptions = {
                         from: 'CyseDM',
                         sender: 'CyseDM',
