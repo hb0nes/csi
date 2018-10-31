@@ -33,7 +33,6 @@ module.exports = [
                     // Geheimpje maken...
                     const secret = user.password + "-" + user.created;
                     const token = jwt.encode(payload, secret);
-
                     const transporter = nodemailer.createTransport({
                         // TODO Met eigen domein
                         service: 'gmail',
@@ -42,31 +41,18 @@ module.exports = [
                             pass: 'Varkens00!'
                         }
                     });
-
-
                     const link = '<a href="' + server + '/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
                     const mailOptions = {
                         from: 'CyseDM',
                         sender: 'CyseDM',
                         to: email,
-                        //to: 'robertjanbuddenbohmer@gmail.com',
                         subject: 'Reset password',
                         html: link
                     };
-
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log('Email sent: ' + info.response);
-                        }
-                    });
-
-                    // TODO geen bad request
+                    await transporter.sendMail(mailOptions);
                     return h.response('A link has been send to your email').code(200);
                 } else {
                     return Boom.badRequest('There is no account with this email address.');
-
                 }
             }
             catch (err) {
@@ -89,10 +75,9 @@ module.exports = [
                 })
                 if (user != null) {
                     // Dit zou hier eigenlijk niet meer nodig zijn sinds de validate al is gebeurd, maar just to be sure...
-                    // En alweer een geheimpje maken...
+                    // En alweer een geheimpje maken... TODO: Functie van maken te veel terugkerende code. Maar beetje haast nu. Lol 
                     const secret = user.password + "-" + user.created;
                     const payload = jwt.decode(req.payload.token, secret);
-
                     if (payload.id === id) {
                         const hash = Bcrypt.hashSync(req.payload.password);
                         Db.User.update({ password: hash }, {
@@ -111,7 +96,6 @@ module.exports = [
                 if (err.message == "Signature verification failed") {
                     return Boom.badRequest('Your reset-link has been expired');
                 }
-
                 l.error('Resetting users password failed.', err);
                 return Boom.badImplementation(`Reset password failed. ${err}`);
             }
