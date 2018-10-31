@@ -123,8 +123,9 @@
           id="msgLength"
           ref="msgLength"
           :style="{position: 'absolute', left: inputWidth + 'px', transform: 'translateX(-100%)' }"
-          :class="{'error--text' : !canSend, 'success--text': canSend}"
+          :class="{'error--text' : !canSend}"
         >{{msgContent.length}}/{{MAX_MSGLENGTH}}</span>
+        <!-- , 'success--text': canSend -->
         <v-btn :disabled="!canSend" flat color="primary" class="subheading" @click="sendMsg">Send</v-btn>
       </div>
     </v-content>
@@ -351,8 +352,6 @@ export default {
       this.$eventHub.$emit("currentPartner", this.partners[index]);
       this.currentPartner = partner;
       // Update the position of the message length
-      this.updateMsgLength();
-
       this.axios({
         method: "GET",
         withCredentials: true,
