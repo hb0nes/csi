@@ -14,9 +14,9 @@ export default new Router({
     {
       path: '/',
       // Hoe gaan we dit doen?? Met redirect werkt forgot password niet meer
-      // redirect: { name: 'login' }
-      name: 'login',
-      component: login
+       redirect: { name: 'login' }
+      //name: 'login',
+      //component: login
 
     },
     {

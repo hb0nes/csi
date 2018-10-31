@@ -11,7 +11,9 @@ const nodemailer = require('nodemailer');
 // JWT simpel, even kijken of dit met dezelfde JWT kan als die bij de login wordt gebruikt
 const jwt = require('jwt-simple');
 require('dotenv').config();
-let server = process.env.FR_SERVERNAME;
+
+let server = process.env.ENV === "production" ? "https://www.b-it-s.nl" : "http://localhost:8080";
+
 module.exports = [
     {
         method: 'POST',

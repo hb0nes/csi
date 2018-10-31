@@ -19,7 +19,7 @@ export default {
   beforeMount() {
     // Tijdelijk uitgezet om forgot password te kunnen testen
     // !!!!!! Hoe krijgen we dit weer aan zonder de reset password optie om te laten vallen?
-    // this.$store.commit("users/validate");
+    this.$store.commit("users/validate");
   },
   // If a user's cookie or token has expired... Log this user out.
   created() {
@@ -30,7 +30,10 @@ export default {
       error => {
         if (error.response.status === 401) {
           this.$store.commit("users/logout");
-          this.$router.push('login');
+          console.log(this.$route.path);
+          if (this.$route.path.substring(0, 6) !== "/reset") {
+            this.$router.push("login");
+          }
         }
         return Promise.reject(error);
       }
