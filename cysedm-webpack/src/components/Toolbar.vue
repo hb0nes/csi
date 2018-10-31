@@ -1,6 +1,10 @@
 <template>
   <v-toolbar fill-height app fixed clipped-left dark color="primary">
-    <v-toolbar-side-icon v-if="isLoggedIn && showSide" @click="toggleDrawer()"></v-toolbar-side-icon>
+    <!-- <v-toolbar-side-icon v-if="isLoggedIn && showSide" @click="toggleDrawer()"></v-toolbar-side-icon> -->
+    <v-tooltip open-delay="350" right>
+    <v-icon slot="activator" v-if="isLoggedIn && showSide" @click="toggleDrawer()">library_books</v-icon>
+      <span>Current conversations.</span>
+    </v-tooltip>
     <a>
       <v-toolbar-title v-if="showTitle" @click="redirect()" class="white--text">CyseDM</v-toolbar-title>
     </a>
@@ -123,6 +127,7 @@ export default {
   },
   watch: {
     $route() {
+      this.currentPartner = "No conversation selected.";
       this.showTitle = this.$route.path !== "/messages";
       this.showSide = this.$route.path === "/messages";
     }

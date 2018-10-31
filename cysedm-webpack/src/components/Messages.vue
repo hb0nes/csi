@@ -2,6 +2,47 @@
   <v-app>
     <v-navigation-drawer app mobile-break-point="700" clipped v-model="drawer">
       <v-layout>
+        <v-flex>
+          <v-toolbar color="blue lighten-5">
+            <v-toolbar-title>Conversations</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialog = true; focusSearch()" icon>
+              <v-icon>search</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-list two-line subheader>
+            <!-- Template voor repeterend item -->
+            <template v-for="(partner, index) in partners">
+              <v-list-tile
+                ripple
+                :key="partner.name"
+                avatar
+                @click="getMessages(partner.partner, index);"
+              >
+                <v-list-tile-avatar>
+                  <img :src="partner.avatar">
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title
+                    class="text-capitalize"
+                  >{{ partner.firstName }} {{partner.lastName}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ partner.status }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-btn
+                    small
+                    dark
+                    v-if="partner.unread > 0"
+                    color="red lighten-2"
+                    :key="index"
+                    icon
+                  >{{partner.unread}}</v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-divider inset :key="index"></v-divider>
+            </template>
+          </v-list>
+        </v-flex>
         <v-dialog v-model="dialog" max-width="500px">
           <v-card>
             <v-toolbar dark color="primary">
@@ -45,51 +86,28 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-flex>
-          <v-toolbar color="blue lighten-5">
-            <v-toolbar-title>Conversations</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn @click="dialog = true; focusSearch()" icon>
-              <v-icon>search</v-icon>
-            </v-btn>
-          </v-toolbar>
-          <v-list two-line subheader>
-            <!-- Template voor repeterend item -->
-            <template v-for="(partner, index) in partners">
-              <v-list-tile
-                ripple
-                :key="partner.name"
-                avatar
-                @click="getMessages(partner.partner, index);"
-              >
-                <v-list-tile-avatar>
-                  <img :src="partner.avatar">
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    class="text-capitalize"
-                  >{{ partner.firstName }} {{partner.lastName}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{ partner.status }}</v-list-tile-sub-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-btn
-                    small
-                    dark
-                    v-if="partner.unread > 0"
-                    color="red lighten-2"
-                    :key="index"
-                    icon
-                  >{{partner.unread}}</v-btn>
-                </v-list-tile-action>
-              </v-list-tile>
-              <v-divider inset :key="index"></v-divider>
-            </template>
-          </v-list>
-        </v-flex>
       </v-layout>
     </v-navigation-drawer>
     <v-content style="font-size: 15px;background-color: #f2f2f2;">
-      <div class="chat-container" ref="chatContainer">
+      <!-- No messages... -->
+      <v-container fluid v-if="messages.length < 1">
+        <v-layout column>
+          <v-flex xs12>
+            <div class="chat-container" ref="chatContainer">
+              <v-layout align-center justify-center column fill-height>
+                <span
+                  class="display-1 blue-grey--text text--lighten-2"
+                >It seems awfully quiet here. Select a conversation by clicking in the upperleft corner!</span>
+                <v-avatar size="250" tile color="grey lighten-4">
+                  <img class="svg" src="/tumbleweed.svg" alt="tumbleweed">
+                </v-avatar>
+              </v-layout>
+            </div>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <!-- Found messages! -->
+      <div v-else class="chat-container" ref="chatContainer">
         <v-container grid-list-md>
           <v-layout row wrap="">
             <v-flex xs12 v-for="(msg, i) in messages" :key="i" v-bind:class="{ 'mt-3': i===0}">
@@ -120,16 +138,18 @@
           type="text"
         >
         <span
-          v-show="!canSend"
+          v-show="msgContent.length > 4000"
           id="msgLength"
           ref="msgLength"
           :style="{position: 'absolute', left: inputWidth + 'px', transform: 'translateX(-100%)' }"
           class="error--text"
         >{{msgContent.length}}/{{MAX_MSGLENGTH}}</span>
-        <v-btn :disabled="!canSend" icon flat color="primary" class="subheading" @click="sendMsg"><v-icon>send</v-icon></v-btn>
+        <v-btn :disabled="!canSend" icon flat color="primary" class="subheading" @click="sendMsg">
+          <v-icon>send</v-icon>
+        </v-btn>
       </div>
+      <audio id="audio" src="./sounds/notification.mp3"/>
     </v-content>
-    <audio id="audio" src="./sounds/notification.mp3"/>
   </v-app>
 </template>
 
@@ -155,8 +175,7 @@ Push.config({
 Push.FCM()
   .then(function(FCM) {
     FCM.getToken()
-      .then(function() {
-      })
+      .then(function() {})
       .catch(function(tokenError) {
         throw tokenError;
       });
@@ -367,7 +386,9 @@ export default {
           }
           this.messages = res.data;
           document.getElementById("msgBox").focus();
-          this.scrollBottom();
+          this.$nextTick(() => {
+            this.scrollBottom();
+          });
         })
         .catch(err => {
           if (err) {
@@ -445,6 +466,10 @@ export default {
     this.handleResize();
   },
   beforeMount() {
+    // No initial navdrawer on mobile
+    if (window.innerWidth < 700) {
+      this.drawer = false;
+    }
     this.getConversations();
   },
   beforeDestroy() {
