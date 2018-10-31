@@ -164,7 +164,7 @@ import PushFCM from "push-fcm-plugin";
 const scrollOptions = {
   container: ".chat-container",
   easing: "ease-in-out",
-  offset: -60,
+  offset: 500,
   force: true,
   cancelable: true
 };

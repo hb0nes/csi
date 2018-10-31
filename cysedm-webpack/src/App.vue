@@ -30,8 +30,8 @@ export default {
       error => {
         if (error.response.status === 401) {
           this.$store.commit("users/logout");
-          console.log(this.$route.path);
-          if (this.$route.path.substring(0, 6) !== "/reset") {
+            console.log(this.$route.path.substring(0, 7))
+          if (this.$route.path.substring(0, 6) !== "/reset" && this.$route.path.substring(0, 7) !== "/forgot") {
             this.$router.push("login");
           }
         }
