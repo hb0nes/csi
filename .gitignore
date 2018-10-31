@@ -1,5 +1,6 @@
 csi.log
 error.log
+.env
 
 .DS_Store
 dist
