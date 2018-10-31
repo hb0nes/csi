@@ -310,12 +310,13 @@ export default {
       this.$nextTick(() => {
         let duration = 500;
         if (this.window.width < 700) {
-          timeout = 900;
+          duration = 900;
         }
         // setTimeout(() => {
         this.$scrollTo("#bottom", duration, scrollOptions);
-      }, timeout);
+      // }, timeout);
       // });
+      })
     },
     toggleDrawer() {
       this.drawer = !this.drawer;
