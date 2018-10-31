@@ -93,13 +93,16 @@
       <v-container fluid v-if="messages.length < 1">
         <v-layout column>
           <v-flex xs12>
-            <div class="chat-container" ref="chatContainer">
+            <div class="chat-container" id="chatContainer" ref="chatContainer">
               <v-layout align-center justify-center column fill-height>
-                <span
-                  class="display-1 blue-grey--text text--lighten-2"
-                >It seems awfully quiet here. Select a conversation by clicking in the upperleft corner!</span>
+                <span class="display-1 blue-grey--text text--lighten-2">{{emptyMessage}}</span>
                 <v-avatar size="250" tile color="grey lighten-4">
-                  <img class="svg" src="/tumbleweed.svg" alt="tumbleweed">
+                  <img
+                    class="svg"
+                    style="background-color:#f2f2f2"
+                    src="/tumbleweed.svg"
+                    alt="tumbleweed"
+                  >
                 </v-avatar>
               </v-layout>
             </div>
@@ -107,7 +110,7 @@
         </v-layout>
       </v-container>
       <!-- Found messages! -->
-      <div v-else class="chat-container" ref="chatContainer">
+      <div v-else class="chat-container" id="chatContainer" ref="chatContainer">
         <v-container grid-list-md>
           <v-layout row wrap="">
             <v-flex xs12 v-for="(msg, i) in messages" :key="i" v-bind:class="{ 'mt-3': i===0}">
@@ -123,6 +126,7 @@
                 <em style="font-size: 0.7em">{{getTime(msg.datetime)}}</em>
               </span>
             </v-flex>
+            <span id="bottom"/>
           </v-layout>
         </v-container>
       </div>
@@ -157,7 +161,13 @@
 import moment from "moment";
 import Push from "push.js";
 import PushFCM from "push-fcm-plugin";
-
+const scrollOptions = {
+  container: ".chat-container",
+  easing: "ease-in-out",
+  offset: -60,
+  force: true,
+  cancelable: true
+};
 const MAX_MSGLENGTH = 4000;
 
 Push.extend(PushFCM);
@@ -297,14 +307,15 @@ export default {
     },
     // Scroll to last message
     scrollBottom() {
-      let timeout = 50;
-      if (this.window.width < 700) {
-        timeout = 400;
-      }
-      setTimeout(() => {
-        var container = this.$refs.chatContainer;
-        container.scrollTop = container.scrollHeight;
+      this.$nextTick(() => {
+        let duration = 500;
+        if (this.window.width < 700) {
+          timeout = 900;
+        }
+        // setTimeout(() => {
+        this.$scrollTo("#bottom", duration, scrollOptions);
       }, timeout);
+      // });
     },
     toggleDrawer() {
       this.drawer = !this.drawer;
@@ -332,7 +343,9 @@ export default {
         // Clear input field
         let msg = this.msgContent;
         this.msgContent = "";
-        this.scrollBottom();
+        this.$nextTick(() => {
+          this.scrollBottom();
+        });
         // Send to DB
         this.axios({
           method: "POST",
@@ -479,6 +492,13 @@ export default {
     window.removeEventListener("resize", this.handleResize);
   },
   computed: {
+    emptyMessage() {
+      if (window.innerWidth < 700) {
+        return "It seems awfully quiet here. Get started by swiping from the left side of the screen!";
+      } else {
+        return "It seems awfully quiet here. Get started by clicking in the upperleft corner!";
+      }
+    },
     canSend() {
       return (
         this.msgContent.length > 0 &&

@@ -8,7 +8,7 @@ import Vuelidate from 'vuelidate'
 import Router from 'vue-router'
 import store from './store'
 import VueSocketio from 'vue-socket.io';
-
+import VueScrollTo from 'vue-scrollto';
 // HTTP calls
 Vue.use(VueAxios, axios)
 // Validation
@@ -17,6 +17,9 @@ Vue.use(Vuelidate)
 Vue.use(Router)
 // Socket.IO
 Vue.use(VueSocketio, `${process.env.VUE_APP_SERVERNAME}:3000`);
+// Scrolling decently
+Vue.use(VueScrollTo);
+
 Vue.config.productionTip = false
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 

@@ -1,8 +1,17 @@
 <template>
   <v-toolbar fill-height app fixed clipped-left dark color="primary">
     <!-- <v-toolbar-side-icon v-if="isLoggedIn && showSide" @click="toggleDrawer()"></v-toolbar-side-icon> -->
-    <v-tooltip open-delay="350" right>
-    <v-icon slot="activator" v-if="isLoggedIn && showSide" @click="toggleDrawer()">library_books</v-icon>
+
+    <v-tooltip open-delay="350" close-delay="100" right>
+      <v-btn
+        icon
+        large
+        @click="toggleDrawer()"
+        slot="activator"
+        v-if="isLoggedIn && showSide"
+      >
+        <v-icon medium>library_books</v-icon>
+      </v-btn>
       <span>Current conversations.</span>
     </v-tooltip>
     <a>
@@ -94,8 +103,12 @@ export default {
   },
   computed: {
     ...mapGetters("users", ["isLoggedIn", "currentUser"]),
-    showName(){
-      return (this.currentPartner.firstName && this.currentPartner.firstName.length > 0 && !this.showTitle)
+    showName() {
+      return (
+        this.currentPartner.firstName &&
+        this.currentPartner.firstName.length > 0 &&
+        !this.showTitle
+      );
     }
   },
   created() {
@@ -103,7 +116,7 @@ export default {
     this.$eventHub.$on("loggedIn", this.setLoggedIn);
   },
   methods: {
-    setLoggedIn(name){
+    setLoggedIn(name) {
       this.loggedIn = true;
       this.loggedInMsg = `Welcome back, ${name}!`;
     },
