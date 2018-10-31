@@ -18,7 +18,7 @@
                 </div>
                 <div v-else-if="expired">
                   <v-alert class="mb-3" :value="true" color="error" icon="check_circle" outline>
-                    <span class="title">Your reset link has been expired</span>
+                    <span class="title">{{expMsg}}</span>
                   </v-alert>
                   <v-btn block color="primary" to="/forgot">Return to generate a new link</v-btn>
                 </div>
@@ -82,6 +82,7 @@ export default {
     changed: false,
     valid: true,
     expired: false,
+    expMsg: "",
     id: "",
     token: "",
     password: "",
@@ -128,17 +129,16 @@ export default {
       },
       url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/validatelink`
     })
-      .then(res => {
+      .then(() => {
         this.changed = false;
         this.expired = false;
-        //this.expireMsg = res.data;
       })
       .catch(err => {
         this.expired = true;
-        // this.errMsg = err.message;
-        // if (err.response) {
-        //   this.errMsg = err.response.data.message;
-        // }
+        this.expMsg = err.message;
+        if (err.response) {
+          this.expMsg = err.response.data.message;
+        }
       });
   },
   computed: {

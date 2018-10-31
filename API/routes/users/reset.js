@@ -10,7 +10,8 @@ const l = require('../../logger');
 const nodemailer = require('nodemailer');
 // JWT simpel, even kijken of dit met dezelfde JWT kan als die bij de login wordt gebruikt
 const jwt = require('jwt-simple');
-
+require('dotenv').config();
+let server = process.env.FR_SERVERNAME;
 module.exports = [
     {
         method: 'POST',
@@ -42,14 +43,13 @@ module.exports = [
                         }
                     });
 
-                    let server = process.env.VUE_APP_SERVERNAME;
 
-                    const link = '<a href="http://localhost:8080/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
+                    const link = '<a href="' + server + '/#/reset/' + payload.id + '/' + token + '">Reset password</a>'
                     const mailOptions = {
                         from: 'CyseDM',
                         sender: 'CyseDM',
-                        //to: email,
-                        to: 'robertjanbuddenbohmer@gmail.com',
+                        to: email,
+                        //to: 'robertjanbuddenbohmer@gmail.com',
                         subject: 'Reset password',
                         html: link
                     };
@@ -63,7 +63,7 @@ module.exports = [
                     });
 
                     // TODO geen bad request
-                    return h.response('An email has been send to your email').code(200);
+                    return h.response('A link has been send to your email').code(200);
                 } else {
                     return Boom.badRequest('There is no account with this email address.');
 
