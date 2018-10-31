@@ -20,6 +20,7 @@
                   <v-alert class="mb-3" :value="true" color="error" icon="check_circle" outline>
                     <span class="title">Your reset link has been expired</span>
                   </v-alert>
+                  <v-btn block color="primary" to="/forgot">Return to generate a new link</v-btn>
                 </div>
                 <v-form
                   v-model="valid"
