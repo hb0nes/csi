@@ -16,10 +16,17 @@
                   </v-alert>
                   <v-btn block color="primary" to="/login">Return to loginpage</v-btn>
                 </div>
-                <v-form v-model="valid"
+                <div v-else-if="expired">
+                  <v-alert class="mb-3" :value="true" color="error" icon="check_circle" outline>
+                    <span class="title">Your reset link has been expired</span>
+                  </v-alert>
+                </div>
+                <v-form
+                  v-model="valid"
                   lazy-validation
                   @keyup.native.enter="valid && confirm()"
-                  v-else>
+                  v-else
+                >
                   <v-text-field
                     v-model="password"
                     :error-messages="passwordErrors"
@@ -73,6 +80,7 @@ export default {
   data: () => ({
     changed: false,
     valid: true,
+    expired: false,
     id: "",
     token: "",
     password: "",
@@ -111,6 +119,26 @@ export default {
   beforeMount() {
     this.id = this.$route.params.id;
     this.token = this.$route.params.token;
+    this.axios({
+      method: "POST",
+      data: {
+        id: this.id,
+        token: this.token
+      },
+      url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/validatelink`
+    })
+      .then(res => {
+        this.changed = false;
+        this.expired = false;
+        //this.expireMsg = res.data;
+      })
+      .catch(err => {
+        this.expired = true;
+        // this.errMsg = err.message;
+        // if (err.response) {
+        //   this.errMsg = err.response.data.message;
+        // }
+      });
   },
   computed: {
     passwordErrors() {

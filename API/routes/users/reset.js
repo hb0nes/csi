@@ -88,6 +88,7 @@ module.exports = [
                     }
                 })
                 if (user != null) {
+                    // Dit zou hier eigenlijk niet meer nodig zijn sinds de validate al is gebeurd, maar just to be sure...
                     // En alweer een geheimpje maken...
                     const secret = user.password + "-" + user.created;
                     const payload = jwt.decode(req.payload.token, secret);
@@ -115,6 +116,37 @@ module.exports = [
                 return Boom.badImplementation(`Reset password failed. ${err}`);
             }
         }
-    }
+    },
+    {
+        method: 'POST',
+        path: '/api/v1/user/validatelink',
+        config: { auth: false },
+        handler: async (req, h) => {
+            try {
+                const id = req.payload.id;
+                let user = await Db.User.findOne({
+                    where: {
+                        username: id
+                    }
+                })
+                if (user != null) {
+                    // En alweer een geheimpje maken...
+                    const secret = user.password + "-" + user.created;
+                    const payload = jwt.decode(req.payload.token, secret);
 
+                    if (payload.id === id) {
+                        return h.response('Link OK').code(200);
+                    }
+                } else {
+                    return Boom.badRequest('Your reset-link has been expired');
+                }
+            } catch (err) {
+                if (err.message == "Signature verification failed") {
+                    return Boom.badRequest('Your reset-link has been expired');
+                }
+                l.error('Validation mail link failed.', err);
+                return Boom.badImplementation(`Something went wrong. ${err}`);
+            }
+        }
+    }
 ]
