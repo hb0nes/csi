@@ -110,7 +110,7 @@
       </div>
       <div v-if="currentPartner" class="typer">
         <input
-          :style="{paddingRight : msgLengthWidth + 'px'}"
+          :style="{paddingRight : msgLengthWidth + 10 + 'px'}"
           @click="scrollBottom()"
           id="msgBox"
           ref="msgBox"
@@ -120,13 +120,13 @@
           type="text"
         >
         <span
+          v-show="!canSend"
           id="msgLength"
           ref="msgLength"
           :style="{position: 'absolute', left: inputWidth + 'px', transform: 'translateX(-100%)' }"
-          :class="{'error--text' : !canSend}"
+          class="error--text"
         >{{msgContent.length}}/{{MAX_MSGLENGTH}}</span>
-        <!-- , 'success--text': canSend -->
-        <v-btn :disabled="!canSend" flat color="primary" class="subheading" @click="sendMsg">Send</v-btn>
+        <v-btn :disabled="!canSend" icon flat color="primary" class="subheading" @click="sendMsg"><v-icon>send</v-icon></v-btn>
       </div>
     </v-content>
     <audio id="audio" src="./sounds/notification.mp3"/>
@@ -156,7 +156,6 @@ Push.FCM()
   .then(function(FCM) {
     FCM.getToken()
       .then(function(token) {
-        console.log("Initialized with token " + token);
       })
       .catch(function(tokenError) {
         throw tokenError;
@@ -223,8 +222,11 @@ export default {
   methods: {
     updateMsgLength() {
       if (this.currentPartner) {
-        this.msgLengthWidth = this.$refs.msgLength.clientWidth + 25;
+        this.msgLengthWidth = this.$refs.msgLength.clientWidth + 15;
         this.inputWidth = this.$refs.msgBox.clientWidth;
+      }
+      if (this.canSend) {
+        this.msgLengthWidth = 0;
       }
     },
     handleResize() {
