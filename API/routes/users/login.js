@@ -58,6 +58,8 @@ module.exports = [
                 h.state('token', token);
                 let loggedIn = {
                     'username': user.username,
+                    'firstName': user.firstName,
+                    'lastName': user.lastName,
                     'scope': scope
                 }
                 return h.response(loggedIn).header('Authorization', token).code(200);

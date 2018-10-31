@@ -16,8 +16,17 @@
       class="ml-2 white--text text-capitalize"
     >{{ currentPartner.firstName }} {{ currentPartner.lastName }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <!-- alert -->
+    <!-- alerts -->
     <v-snackbar
+      class="title"
+      top
+      multi-line
+      color="success"
+      :timeout="timeout"
+      v-model="loggedIn"
+    >{{loggedInMsg}}</v-snackbar>
+    <v-snackbar
+      class="title"
       top
       multi-line
       color="success"
@@ -25,6 +34,7 @@
       v-model="alertSuccess"
     >You've succesfully logged out!</v-snackbar>
     <v-snackbar
+      class="title"
       top
       multi-line
       color="error"
@@ -59,6 +69,8 @@ export default {
       showTitle: this.$route.path !== "/messages",
       showSide: this.$route.path === "/messages",
       currentPartner: "No conversation selected.",
+      loggedIn: false,
+      loggedInMsg: "",
       actions: [
         {
           title: "Logout",
@@ -84,8 +96,13 @@ export default {
   },
   created() {
     this.$eventHub.$on("currentPartner", this.changePartner);
+    this.$eventHub.$on("loggedIn", this.setLoggedIn);
   },
   methods: {
+    setLoggedIn(name){
+      this.loggedIn = true;
+      this.loggedInMsg = `Welcome back, ${name}!`;
+    },
     changePartner(partner) {
       this.currentPartner = partner;
     },
@@ -102,6 +119,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("currentPartner");
+    this.$eventHub.$off("loggedIn");
   },
   watch: {
     $route() {

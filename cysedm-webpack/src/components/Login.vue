@@ -12,7 +12,7 @@
               <v-card-text>
                 <v-form v-model="valid" lazy-validation @keyup.native.enter="valid && logIn()">
                   <v-text-field
-                    v-model="login"
+                    v-model.trim="login"
                     :error-messages="loginErrors"
                     prepend-icon="person"
                     label="Username or Email"
@@ -97,6 +97,10 @@ export default {
     }
   },
   methods: {
+    capitalize(text){
+  return text.charAt(0).toUpperCase() + text.slice(1);
+
+    },
     reqFullscreen() {
       let app = document.getElementById("app");
       if (app.requestFullscreen) {
@@ -124,6 +128,7 @@ export default {
           this.$store.commit("users/auth_success", res.data);
           this.loginRes = true;
           this.loginMsg = res.data;
+          this.$eventHub.$emit('loggedIn', this.capitalize(res.data.firstName) + ' ' + this.capitalize(res.data.lastName))
           this.$router.push("messages");
         })
         .catch(err => {
@@ -145,7 +150,7 @@ export default {
       this.loader = null;
     }
   },
-  beforeMount(){
+  beforeMount() {
     if (this.$store.getters["users/isLoggedIn"]) {
       this.$router.push("messages");
     }

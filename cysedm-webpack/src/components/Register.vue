@@ -25,7 +25,7 @@
                   v-else
                 >
                   <v-text-field
-                    v-model="username"
+                    v-model.trim="username"
                     :error-messages="usernameErrors"
                     prepend-icon="person"
                     label="Username"
@@ -35,7 +35,7 @@
                     @blur="$v.username.$touch()"
                   ></v-text-field>
                   <v-text-field
-                    v-model="firstname"
+                    v-model.trim="firstname"
                     :error-messages="firstnameErrors"
                     prepend-icon="undo"
                     label="First name"
@@ -45,7 +45,7 @@
                     @blur="$v.firstname.$touch()"
                   ></v-text-field>
                   <v-text-field
-                    v-model="lastname"
+                    v-model.trim="lastname"
                     :error-messages="lastnameErrors"
                     prepend-icon="redo"
                     label="Last name"
@@ -55,7 +55,7 @@
                     @blur="$v.lastname.$touch()"
                   ></v-text-field>
                   <v-text-field
-                    v-model="email"
+                    v-model.trim="email"
                     :error-messages="emailErrors"
                     prepend-icon="mail_outline"
                     label="Email"

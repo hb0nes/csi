@@ -155,7 +155,7 @@ Push.config({
 Push.FCM()
   .then(function(FCM) {
     FCM.getToken()
-      .then(function(token) {
+      .then(function() {
       })
       .catch(function(tokenError) {
         throw tokenError;
