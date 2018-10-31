@@ -88,7 +88,7 @@
         </v-flex>
       </v-layout>
     </v-navigation-drawer>
-    <v-content style="font-size: 15px">
+    <v-content style="font-size: 15px;background-color: #f2f2f2;">
       <div class="chat-container" ref="chatContainer">
         <v-container grid-list-md>
           <v-layout row wrap="">
@@ -108,24 +108,24 @@
           </v-layout>
         </v-container>
       </div>
-      <div class="typer">
+      <div v-if="currentPartner" class="typer">
         <input
+          :style="{paddingRight : msgLengthWidth + 'px'}"
           @click="scrollBottom()"
-          v-if="currentPartner"
           id="msgBox"
+          ref="msgBox"
           v-model="msgContent"
           @keyup.enter="sendMsg"
           placeholder="Type a message"
           type="text"
         >
-        <v-btn
-          v-if="currentPartner"
-          :disabled="msgContent.length < 1"
-          flat
-          color="primary"
-          class="subheading"
-          @click="sendMsg"
-        >Send</v-btn>
+        <span
+          id="msgLength"
+          ref="msgLength"
+          :style="{position: 'absolute', left: inputWidth + 'px', transform: 'translateX(-100%)' }"
+          :class="{'error--text' : !canSend, 'success--text': canSend}"
+        >{{msgContent.length}}/{{MAX_MSGLENGTH}}</span>
+        <v-btn :disabled="!canSend" flat color="primary" class="subheading" @click="sendMsg">Send</v-btn>
       </div>
     </v-content>
     <audio id="audio" src="./sounds/notification.mp3"/>
@@ -136,6 +136,9 @@
 import moment from "moment";
 import Push from "push.js";
 import PushFCM from "push-fcm-plugin";
+
+const MAX_MSGLENGTH = 4000;
+
 Push.extend(PushFCM);
 const pushConfig = {
   apiKey: "AIzaSyBXL2Dvw1lHNSpf2otmfynvRizHPiHkkoM",
@@ -171,14 +174,16 @@ export default {
         width: 0,
         height: 0
       },
-      isConnected: false,
       partners: [],
-      messages: [],
       currentPartner: "",
+      messages: [],
       debug: false,
       dialog: false,
       drawer: true,
       msgContent: "",
+      MAX_MSGLENGTH: MAX_MSGLENGTH,
+      msgLengthWidth: 0,
+      inputWidth: 0,
       search: "",
       searchResult: [],
       searchMsg: "",
@@ -186,12 +191,6 @@ export default {
     };
   },
   sockets: {
-    connect() {
-      this.isConnected = true;
-    },
-    disconnect() {
-      this.isConnected = false;
-    },
     message: function(sender) {
       Push.create(`CyseDM`, {
         body: `${sender} has sent you a message.`,
@@ -221,9 +220,16 @@ export default {
     }
   },
   methods: {
+    updateMsgLength() {
+      if (this.currentPartner) {
+        this.msgLengthWidth = this.$refs.msgLength.clientWidth + 25;
+        this.inputWidth = this.$refs.msgBox.clientWidth;
+      }
+    },
     handleResize() {
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
+      this.updateMsgLength();
     },
     focusSearch() {
       setTimeout(() => {
@@ -283,9 +289,8 @@ export default {
     },
     // ... Send message
     sendMsg() {
-      if (this.msgContent.length > 0 && this.currentUser) {
+      if (this.canSend) {
         // Add your sent message to the page without doing another API call
-
         let dt = new Date();
         let offset = dt.getTimezoneOffset();
         this.messages.push({
@@ -342,8 +347,12 @@ export default {
     },
     // Get all the messages for the conversation you just clicked
     getMessages(partner, index) {
+      // Tell the toolbar which partner we're talking to
       this.$eventHub.$emit("currentPartner", this.partners[index]);
       this.currentPartner = partner;
+      // Update the position of the message length
+      this.updateMsgLength();
+
       this.axios({
         method: "GET",
         withCredentials: true,
@@ -415,14 +424,7 @@ export default {
         .format("HH:mm");
     }
   },
-  computed: {
-    currentUser: function() {
-      return this.$store.getters["users/currentUser"].username;
-    }
-  },
-  beforeMount() {
-    this.getConversations();
-  },
+
   created() {
     try {
       Push.Permission.request(
@@ -439,14 +441,40 @@ export default {
     this.$eventHub.$on("toggleDrawer", this.toggleDrawer);
     this.$socket.emit("join", this.currentUser);
     window.addEventListener("resize", this.handleResize);
-
     this.handleResize();
+  },
+  beforeMount() {
+    this.getConversations();
   },
   beforeDestroy() {
     this.$eventHub.$off("toggleDrawer");
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize);
+  },
+  computed: {
+    canSend() {
+      return (
+        this.msgContent.length > 0 &&
+        this.msgContent.length <= 4000 &&
+        this.currentUser
+      );
+    },
+    currentUser: function() {
+      return this.$store.getters["users/currentUser"].username;
+    }
+  },
+  watch: {
+    msgContent() {
+      this.$nextTick(() => {
+        this.updateMsgLength();
+      });
+    },
+    currentPartner() {
+      this.$nextTick(() => {
+        this.updateMsgLength();
+      });
+    }
   }
 };
 </script>
@@ -505,12 +533,7 @@ export default {
   float: left;
 }
 .you {
-  /* color: white; */
-  /* background-color: rgb(25, 118, 210); */
   background-color: #e8f5e9;
   float: right;
-}
-body {
-  background-color: #f2f2f2;
 }
 </style>
