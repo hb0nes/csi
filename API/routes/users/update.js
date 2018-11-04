@@ -1,13 +1,17 @@
+// bcrypt for saving passwords
+const Bcrypt = require('bcrypt-nodejs')
+// Json web token for authentication
+const Jwt = require('jsonwebtoken');
 // Models
-const Db = require('../../models');
+const Db = require('../../models')
 // Validation
 const Joi = require('joi');
-// Error messages
+// Boom for errors
 const Boom = require('boom');
-//Bcrypt voor hashen/opslaan wachtwoorden
-const Bcrypt = require('bcrypt-nodejs')
 // Logging
 const l = require('../../logger');
+// Environment Variables
+require('dotenv').config();
 
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum(),
@@ -15,6 +19,10 @@ const schema = Joi.object().keys({
     "firstName": Joi.string().min(2).regex(/^[a-zA-Z]+$/),
     "lastName": Joi.string().min(2).regex(/^[a-zA-Z]+$/),
     "email": Joi.string().email().min(8).max(50)
+});
+
+const schema2 = Joi.object().keys({
+    "password": Joi.string().min(8).required(),
 });
 
 module.exports = [
@@ -59,6 +67,49 @@ module.exports = [
                 l.error('Deleting a user has failed.',err);
                 return Boom.badImplementation(`Deleting user failed. ${err}`);
             }
+        }
+    },
+    {
+        method: 'PUT',
+        path: '/api/v1/user/update/{oldPassword}/{newPassword}',
+        config: {
+            auth: {
+                strategy: 'jwt',
+                scope: 'admin'
+            }
+        },
+        handler: async (req, h) => {
+            const result = Joi.validate(req.params, schema2);
+            if (result.error || !req.params.oldPassword || !req.params.newPassword) {
+                l.info(`Failed to change password ${result.error}`);
+                return Boom.badRequest(`Changing password failed.`);
+            }
+            let newPw = await Bcrypt.hashSync(req.params.newPassword)
+            console.log(newPw)
+            let user = await Db.User.findOne({
+                where: {
+                    id: req.auth.credentials.id
+                }
+            })
+            if (Bcrypt.compareSync(req.params.oldPassword, user.password)) {
+                await Db.User.update({
+                    password: newPw
+                },
+                {
+                    where: {
+                        id: req.auth.credentials.id
+                    }
+                })
+            }
+            let token = Jwt.sign({ "id": req.auth.credentials.id, "username": req.auth.credentials.username, "scope": req.auth.credentials.scope },
+                process.env.SECRET, { expiresIn: "24h" });
+            l.info(`User ${req.auth.credentials.username} Changed password successfully.`);
+            h.state('token', token);
+            let loggedIn = {
+                'username': req.auth.credentials.username,
+                'scope': req.auth.credentials.scope
+            }
+            return h.response(loggedIn).header('Authorization', token).code(200);
         }
     }
 ]

@@ -11,7 +11,7 @@ module.exports = [
     {
         // Expects either a username alone or an added specific property/field. Multiple fields, multiple calls.
         method: 'GET',
-        path: '/api/v1/user/{username}/{field}',
+        path: '/api/v1/user/read',
         config: {
             auth: {
                 strategy: 'jwt',
@@ -20,32 +20,18 @@ module.exports = [
         },
         handler: async (req, h) => {
             try {
-                let attributes = [];
-                let result;
-                if (req.params.field) {
-                    if (req.params.field.toLowerCase() === "password") {
-                        return Boom.badRequest("Cannot request password.");
-                    }
-                    attributes.push(req.params.field);
-                    result = await Db.User.findOne({
-                        attributes: attributes,
-                        where: {
-                            username: req.params.username
-                        }
-                    })
-                } else {
-                    result = await Db.User.findOne({
-                        attributes: { exclude: ["password"] },
-                        where: {
-                            username: req.params.username
-                        }
-                    })
+                let result = await Db.User.findOne({
+                    attributes: ['firstName', 'lastName', 'status', 'avatar'],
+                    where: {
+                        id: req.auth.credentials.id
+                    },                   
+                })
+                if (!result) {
+                    return Boom.badRequest('No results found.');
                 }
-                return h.response(result).code(200);
-            }
-            catch (err) {
-                l.error('User read failed.',err);
-                return Boom.badImplementation(`Getting user failed. ${err}`);
+                return h.response(result).code(200);         
+            } catch (err) {
+                return Boom.badImplementation(`Could not load users. Error: ${err}`)
             }
         }
     }
