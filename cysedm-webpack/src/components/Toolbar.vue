@@ -1,37 +1,23 @@
 <template>
   <v-toolbar fill-height app fixed clipped-left dark color="primary">
     <!-- <v-toolbar-side-icon v-if="isLoggedIn && showSide" @click="toggleDrawer()"></v-toolbar-side-icon> -->
+
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title>Profile</v-toolbar-title>
         </v-toolbar>
         <v-container fluid grid-list-md>
-          <v-speed-dial
-          v-model="fab"
-          :top="top"
-          :bottom="bottom"
-          :right="right"
-          :left="left"
-          :direction="direction"
-          :open-on-hover="hover"
-          :transition="transition"
-        >
-          <v-btn v-btn--floating slot="activator" v-model="fab" color="blue darken-2" dark fab @click="showBox()">
-            <v-icon>edit</v-icon>
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="green">
-            <v-icon>accept</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="red">
-            <v-icon>delete</v-icon>
-          </v-btn>
-        </v-speed-dial>
           <v-layout child-flex wrap="">
             <v-flex d-flex xs12 sm6 md6>
               <v-card>
-                <div v-if="dropBox" id="picture">
+                
+                <div style="position:relative" v-if="dropBox" id="picture">
+                  <div style="position:absolute">
+                  <v-btn fab dark small color="green" @click="showBox()">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                </div>
                   <picture-input
                     ref="pictureInput"
                     :width="225"
@@ -42,7 +28,12 @@
                     buttonClass="ui button primary"
                   ></picture-input>
                 </div>
-                <div v-else id="picture">
+                <div style="position:relative" v-else id="picture">
+                  <div style="position:absolute">
+                  <v-btn fab dark small color="green" @click="showBox()">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                </div>
                   <img :src="result.avatar">
                 </div>
               </v-card>
@@ -421,5 +412,17 @@ export default {
 #picture {
   height: 225px;
   width: 225px;
+}
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
 }
 </style>
