@@ -11,29 +11,31 @@
           <v-layout child-flex wrap="">
             <v-flex d-flex xs12 sm6 md6>
               <v-card>
-                
                 <div style="position:relative" v-if="dropBox" id="picture">
-                  <div style="position:absolute">
-                  <v-btn fab dark small color="green" @click="showBox()">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                </div>
+                  <div style="position:absolute;z-index:1000">
+                    <v-btn fab dark small color="blue" @click="showBox()">
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                    <v-btn v-if="imageChanged" fab dark small color="green" @click="updateAvatar()">
+                      <v-icon>done</v-icon>
+                    </v-btn>
+                  </div>
                   <picture-input
                     ref="pictureInput"
                     :width="225"
                     :height="225"
-                    :removable="true"
-                    removeButtonClass="ui red button"
-                    accept="image/jpeg, image/png"
-                    buttonClass="ui button primary"
+                    :removable="false"
+                    :hideChangeButton="true"
+                    :zIndex="0"
+                    @change="onChange"
                   ></picture-input>
                 </div>
                 <div style="position:relative" v-else id="picture">
                   <div style="position:absolute">
-                  <v-btn fab dark small color="green" @click="showBox()">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                </div>
+                    <v-btn fab dark small color="blue" @click="showBox()">
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </div>
                   <img :src="result.avatar">
                 </div>
               </v-card>
@@ -191,16 +193,8 @@ export default {
       errMsg: "",
       wrongPassword: "",
       errors: "",
-      direction: "right",
-      fab: false,
-      fling: true,
-      hover: false,
-      tabs: null,
-      top: false,
-      right: true,
-      bottom: true,
-      left: false,
-      transition: "slide-y-reverse-transition",
+      image: "",
+      imageChanged: false,
       actions: [
         {
           title: "Logout",
@@ -274,18 +268,6 @@ export default {
       !this.$v.newPw2.required &&
         errors.push("Confirming password is required.");
       return errors;
-    },
-    activeFab() {
-      switch (this.tabs) {
-        case "one":
-          return { class: "purple", icon: "account_circle" };
-        case "two":
-          return { class: "red", icon: "edit" };
-        case "three":
-          return { class: "green", icon: "keyboard_arrow_up" };
-        default:
-          return {};
-      }
     }
   },
   created() {
@@ -294,13 +276,39 @@ export default {
   },
   methods: {
     onChange(image) {
-      console.log("New picture selected!");
       if (image) {
-        console.log("Picture loaded.");
         this.image = image;
+        this.imageChanged = true;
       } else {
-        console.log("FileReader API not supported: use the <form>, Luke!");
+        this.imageChanged = false;
       }
+    },
+    updateAvatar() {
+      let formData = new FormData();
+      formData.append('image',this.image);
+      this.axios
+        .post(
+          `${process.env.VUE_APP_SERVERNAME}:3000/API/routes/users/uploads`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "accept": "application/json",
+              "Accept-Language": "en-US,en;q=0.8",
+              "Content-Type": `multipart/form-data`
+            }
+          }
+        )
+        
+        .then(() => {
+          alert("complete");
+        })
+        .catch(err => {
+          alert(err);
+        });
+        alert(this.image)
+        alert(formData.get('data'))
+      alert(this.image);
     },
     showBox() {
       if (this.dropBox) {
@@ -373,6 +381,12 @@ export default {
         this.oldPw = "";
         this.newPw1 = "";
         this.newPw2 = "";
+        this.dropBox = false;
+      }
+    },
+    dropBox: function(value) {
+      if (!value) {
+        this.imageChanged = false;
       }
     },
     errors: function(value) {
@@ -382,9 +396,10 @@ export default {
           this.errors = [];
           this.changeRes = false;
           this.changeErr = false;
-          this.alertSuccess = false;
+
+          /*this.alertSuccess = false;
           this.alertFail = false;
-          this.errMsg = "";
+          this.errMsg = "";*/
         }, 2000);
       }
     },
@@ -413,16 +428,16 @@ export default {
   height: 225px;
   width: 225px;
 }
-.float{
-	position:fixed;
-	width:60px;
-	height:60px;
-	bottom:40px;
-	right:40px;
-	background-color:#0C9;
-	color:#FFF;
-	border-radius:50px;
-	text-align:center;
-	box-shadow: 2px 2px 3px #999;
+.float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #0c9;
+  color: #fff;
+  border-radius: 50px;
+  text-align: center;
+  box-shadow: 2px 2px 3px #999;
 }
 </style>

@@ -12,6 +12,9 @@ const Boom = require('boom');
 const l = require('../../logger');
 // Environment Variables
 require('dotenv').config();
+const fs = require('fs');
+const hapi = require("hapi");
+
 
 const schema = Joi.object().keys({
     "username": Joi.string().min(2).max(40).alphanum(),
@@ -45,7 +48,7 @@ module.exports = [
                     return Boom.badRequest(result.error.toString());
                 }
                 // If you're not changing your own settings or you aren't an admin then you're not authorized.
-                if (req.auth.credentials.username !== req.params.username 
+                if (req.auth.credentials.username !== req.params.username
                     && req.auth.credentials.scope.indexOf("admin") === -1) {
                     return Boom.unauthorized("Unauthorized user.");
                 }
@@ -64,7 +67,7 @@ module.exports = [
                 return h.response(`User ${req.params.username} updated succesfully.`).code(202);
             }
             catch (err) {
-                l.error('Deleting a user has failed.',err);
+                l.error('Deleting a user has failed.', err);
                 return Boom.badImplementation(`Deleting user failed. ${err}`);
             }
         }
@@ -95,11 +98,11 @@ module.exports = [
                 await Db.User.update({
                     password: newPw
                 },
-                {
-                    where: {
-                        id: req.auth.credentials.id
-                    }
-                })
+                    {
+                        where: {
+                            id: req.auth.credentials.id
+                        }
+                    })
             }
             let token = Jwt.sign({ "id": req.auth.credentials.id, "username": req.auth.credentials.username, "scope": req.auth.credentials.scope },
                 process.env.SECRET, { expiresIn: "24h" });
@@ -110,6 +113,44 @@ module.exports = [
                 'scope': req.auth.credentials.scope
             }
             return h.response(loggedIn).header('Authorization', token).code(200);
+        }
+    },
+    {
+        method: 'POST',
+        path: '/api/v1/user/updateAvatar',
+        config: {
+            payload: {
+                //defaultContentType: "multipart/form-data",
+                output: 'stream',
+                allow: 'multipart/form-data',
+                parse: true,
+            },
+            auth: {
+                strategy: 'jwt',
+                scope: 'admin'
+            }
+        },
+        handler: async function (request, h) {
+            console.log(request.payload)
+            fs.writeFile('filename.png', err => {
+                if (!err) {
+                  console.log('Uploaded!')
+                }
+              })
+               try {
+                await Db.User.update({
+                    avatar: request.payload
+                },
+                {
+                    where:{
+                        username: request.auth.credentials.username
+                    }
+                })
+            } catch (err) {
+                // error handling
+                return Boom.badImplementation(`Could not post image. Error: ${err}`)
+            }
+            return h.response('Image posted succesfully').code(202);
         }
     }
 ]

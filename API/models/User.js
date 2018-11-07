@@ -48,7 +48,8 @@ module.exports = (sequelize, Sequelize) => {
         },
         avatar: {
             type: Sequelize.STRING(255),
-            defaultValue: "bla",
+            
+            //defaultValue: "bla",
             defaultValue: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT-BwYJuj3yyVST5zpsvuLOLJWk26C9uWSk0vE2HbmTKX38j_Wdw",
             allowNull: false
         },
