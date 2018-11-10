@@ -47,10 +47,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         avatar: {
-            type: Sequelize.STRING(255),
-            
-            //defaultValue: "bla",
-            defaultValue: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT-BwYJuj3yyVST5zpsvuLOLJWk26C9uWSk0vE2HbmTKX38j_Wdw",
+            type: Sequelize.BLOB('LONG'),          
             allowNull: false
         },
         created: {

@@ -13,7 +13,7 @@ const l = require('../../logger');
 // Environment Variables
 require('dotenv').config();
 const fs = require('fs');
-const hapi = require("hapi");
+
 
 
 const schema = Joi.object().keys({
@@ -25,7 +25,7 @@ const schema = Joi.object().keys({
 });
 
 const schema2 = Joi.object().keys({
-    "password": Joi.string().min(8).required(),
+    "password": Joi.string().min(8),
 });
 
 module.exports = [
@@ -82,13 +82,14 @@ module.exports = [
             }
         },
         handler: async (req, h) => {
-            const result = Joi.validate(req.params, schema2);
-            if (result.error || !req.params.oldPassword || !req.params.newPassword) {
+            /*console.log(req.params.newPassword)
+            const result = Joi.validate(req.params.newPassword, schema2);
+            if (result.error) {
                 l.info(`Failed to change password ${result.error}`);
                 return Boom.badRequest(`Changing password failed.`);
-            }
+            }*/
             let newPw = await Bcrypt.hashSync(req.params.newPassword)
-            console.log(newPw)
+            
             let user = await Db.User.findOne({
                 where: {
                     id: req.auth.credentials.id
@@ -118,39 +119,32 @@ module.exports = [
     {
         method: 'POST',
         path: '/api/v1/user/updateAvatar',
-        config: {
-            payload: {
-                //defaultContentType: "multipart/form-data",
-                output: 'stream',
-                allow: 'multipart/form-data',
-                parse: true,
-            },
+        config: {      
             auth: {
                 strategy: 'jwt',
                 scope: 'admin'
+            },
+            payload: {
+                output: 'stream',
+                allow: 'multipart/form-data' // important
             }
         },
-        handler: async function (request, h) {
-            console.log(request.payload)
-            fs.writeFile('filename.png', err => {
-                if (!err) {
-                  console.log('Uploaded!')
-                }
-              })
-               try {
+        handler: async (req) => {
+            try {
+                console.log(req.payload)
                 await Db.User.update({
-                    avatar: request.payload
+                    avatar: req.payload.image.hapi.headers
                 },
-                {
-                    where:{
-                        username: request.auth.credentials.username
-                    }
-                })
-            } catch (err) {
-                // error handling
-                return Boom.badImplementation(`Could not post image. Error: ${err}`)
+                    {
+                        where: {
+                            id: req.auth.credentials.id
+                        }
+                    })
             }
-            return h.response('Image posted succesfully').code(202);
+            catch (err) {
+                console.log('Failed to upload image: ' + (err))
+            }
+            return "complete"
         }
     }
 ]

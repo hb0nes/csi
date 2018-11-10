@@ -30,13 +30,13 @@
                     @change="onChange"
                   ></picture-input>
                 </div>
-                <div style="position:relative" v-else id="picture">
+                <div v-else id="picture">
                   <div style="position:absolute">
                     <v-btn fab dark small color="blue" @click="showBox()">
                       <v-icon>edit</v-icon>
                     </v-btn>
                   </div>
-                  <img :src="result.avatar">
+                  <img :src="this.image">
                 </div>
               </v-card>
             </v-flex>
@@ -171,6 +171,7 @@ import PictureInput from "vue-picture-input";
 export default {
   data() {
     return {
+      avatar: "",
       timeout: 3000,
       alertSuccess: false,
       alertFail: false,
@@ -187,6 +188,7 @@ export default {
       oldPw: "",
       newPw1: "",
       newPw2: "",
+      blob: "",
       changeRes: false,
       resMsg: "",
       changeErr: false,
@@ -217,6 +219,7 @@ export default {
           action: () => {
             try {
               this.getProfile();
+
               this.dialog = true;
             } catch (err) {
               this.err = err;
@@ -279,36 +282,33 @@ export default {
       if (image) {
         this.image = image;
         this.imageChanged = true;
+        this.avatar = image;
       } else {
         this.imageChanged = false;
       }
     },
-    updateAvatar() {
-      let formData = new FormData();
-      formData.append('image',this.image);
-      this.axios
-        .post(
-          `${process.env.VUE_APP_SERVERNAME}:3000/API/routes/users/uploads`,
-          formData,
-          {
-            withCredentials: true,
-            headers: {
-              "accept": "application/json",
-              "Accept-Language": "en-US,en;q=0.8",
-              "Content-Type": `multipart/form-data`
-            }
-          }
-        )
-        
+    async updateAvatar() {
+      var url = this.image;
+      fetch(url)
+        .then(res => res.blob())
+        .then(blob => (this.blob = blob));
+      const formData = new FormData();
+      formData.append("image", this.blob);
+      this.axios({
+        method: "POST",
+        withCredentials: true,
+        url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/updateAvatar`,
+        data: formData,
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      })
         .then(() => {
           alert("complete");
         })
         .catch(err => {
           alert(err);
         });
-        alert(this.image)
-        alert(formData.get('data'))
-      alert(this.image);
     },
     showBox() {
       if (this.dropBox) {
@@ -334,7 +334,7 @@ export default {
     toggleDrawer() {
       this.$eventHub.$emit("toggleDrawer");
     },
-    getProfile() {
+    async getProfile() {
       this.axios({
         method: "GET",
         withCredentials: true,
@@ -342,13 +342,32 @@ export default {
       })
         .then(res => {
           this.result = res.data;
+          //alert(this.result.avatar.data.image);
+          let blobToBase64 = function(blob, callback) {
+            var reader = new FileReader();
+            alert(blob)
+            reader.readAsDataURL(blob);
+            reader.onload = function() {
+              var dataUrl = reader.result;
+              var base64 = dataUrl.split(",")[1];
+              alert(base64);
+              alert(dataUrl);
+              callback(base64);
+            };
+          };
+          alert(JSON.stringify(this.result.avatar))
+          this.image = blobToBase64(this.result.avatar.image);
+          alert(this.image);
+          //
+          /*const formData = 
+          */
         })
         .catch(() => {
           this.result = {};
         });
     },
-    changePw() {
-      this.axios({
+    async changePw() {
+      await this.axios({
         method: "PUT",
         withCredentials: true,
         url: `${process.env.VUE_APP_SERVERNAME}:3000/api/v1/user/update/${
@@ -403,7 +422,6 @@ export default {
         }, 2000);
       }
     },
-
     top(val) {
       this.bottom = !val;
     },
@@ -424,7 +442,12 @@ export default {
   font-size: 1.25rem;
   font-weight: bold;
 }
+img {
+  height: 225px;
+  width: 225px;
+}
 #picture {
+  position: relative;
   height: 225px;
   width: 225px;
 }
