@@ -1,3 +1,13 @@
+// APM for ELK
+const apm = require('elastic-apm-node').start({
+    serviceName: 'cysedm-api',
+  
+    // Use if APM Server requires a token
+    // secretToken: '',
+  
+    // Set custom APM Server URL (default: http://localhost:8200)
+    serverUrl: 'http://192.168.1.250:8200'
+  })
 // Hapi for...Hapiness.
 const Hapi = require('hapi');
 // Environment variables
