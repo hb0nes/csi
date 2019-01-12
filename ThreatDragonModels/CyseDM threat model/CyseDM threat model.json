@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "title": "CyseDM threat model",
+    "owner": "Team 6",
+    "description": "Invullen door iemand die over een BS generator beschikt"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "title": "diagram 1",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 0
+      }
+    ]
+  }
+}
