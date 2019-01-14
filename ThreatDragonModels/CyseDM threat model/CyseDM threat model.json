@@ -53,16 +53,34 @@
               "angle": 0,
               "id": "3f8e83cb-5c77-4423-9b13-2b096c4ff459",
               "z": 3,
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "(D)DoS",
+                  "type": "Denial of service",
+                  "description": "Anyone can make HTTP requests to the API and, if they are using proxies, it will be almost impossible to track and rate-limit them.",
+                  "mitigation": "Avoid, mitigate"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "title": "Tampering",
+                  "description": "Attacker might want to perform a Man-in-the-Middle attack by altering messages sent between two parties.",
+                  "mitigation": "Avoid"
+                }
+              ],
               "attrs": {
                 ".element-shape": {
-                  "class": "element-shape hasNoOpenThreats isInScope"
+                  "class": "element-shape hasOpenThreats isInScope"
                 },
                 "text": {
                   "text": "CyseDM\nWebapp"
                 },
                 ".element-text": {
-                  "class": "element-text hasNoOpenThreats isInScope"
+                  "class": "element-text hasOpenThreats isInScope"
                 }
               }
             },
@@ -96,6 +114,9 @@
               ],
               "z": 4,
               "hasOpenThreats": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "https",
               "attrs": {
                 ".marker-target": {
                   "class": "marker-target hasNoOpenThreats isInScope"
@@ -138,6 +159,9 @@
               ],
               "z": 5,
               "hasOpenThreats": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "https",
               "attrs": {
                 ".marker-target": {
                   "class": "marker-target hasNoOpenThreats isInScope"
@@ -176,16 +200,27 @@
               "angle": 0,
               "id": "f56f12c3-2a34-40a9-9324-6bde332976c4",
               "z": 7,
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
+              "isSigned": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Editting cookies",
+                  "type": "Tampering",
+                  "description": "Editing cookies is not possible because the JSON Web Tokens are signed, which requires a secret key.",
+                  "mitigation": "Avoid"
+                }
+              ],
               "attrs": {
                 ".element-shape": {
-                  "class": "element-shape hasNoOpenThreats isInScope"
+                  "class": "element-shape hasOpenThreats isInScope"
                 },
                 "text": {
                   "text": "Local storage"
                 },
                 ".element-text": {
-                  "class": "element-text hasNoOpenThreats isInScope"
+                  "class": "element-text hasOpenThreats isInScope"
                 }
               }
             },
@@ -202,16 +237,42 @@
               "angle": 0,
               "id": "b26592b4-047b-43f6-bc1e-a210fb1ad215",
               "z": 9,
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "title": "Command injection",
+                  "mitigation": "Avoid",
+                  "description": "An attacker could gain a reverse shell and elevate privileges to gain root"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "(D)DoS",
+                  "description": "Anyone can make HTTP requests to the API and, if they are using proxies, it will be almost impossible to track and rate-limit them.",
+                  "type": "Denial of service",
+                  "mitigation": "Avoid/mitigate"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "description": "Anyone can make an account for CyseDM and start messaging.",
+                  "type": "Denial of service",
+                  "title": "Spam",
+                  "mitigation": "Mitigate"
+                }
+              ],
               "attrs": {
                 ".element-shape": {
-                  "class": "element-shape hasNoOpenThreats isInScope"
+                  "class": "element-shape hasOpenThreats isInScope"
                 },
                 "text": {
                   "text": "CyseDM API"
                 },
                 ".element-text": {
-                  "class": "element-text hasNoOpenThreats isInScope"
+                  "class": "element-text hasOpenThreats isInScope"
                 }
               }
             },
@@ -228,16 +289,27 @@
               "angle": 0,
               "id": "5b71b535-3599-4414-99b1-9b54d8d83d9b",
               "z": 10,
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "title": "Data theft",
+                  "description": "When an attacker manages to dump the database and decrypt all messages in there, a lot of confidential information would be public.",
+                  "mitigation": "Avoiding information disclosure altogether by implementing encryption and storing the secret key’s safely is the best path to follow here.\n-Restrict access to the DB to only the IP address of API server."
+                }
+              ],
+              "storesCredentials": true,
               "attrs": {
                 ".element-shape": {
-                  "class": "element-shape hasNoOpenThreats isInScope"
+                  "class": "element-shape hasOpenThreats isInScope"
                 },
                 "text": {
                   "text": "Database"
                 },
                 ".element-text": {
-                  "class": "element-text hasNoOpenThreats isInScope"
+                  "class": "element-text hasOpenThreats isInScope"
                 }
               }
             },
@@ -396,8 +468,8 @@
               },
               "vertices": [
                 {
-                  "x": 564,
-                  "y": 356
+                  "x": 607,
+                  "y": 367
                 }
               ],
               "id": "a394ffbf-6b7a-4272-95f3-49b65dbc439f",
@@ -417,13 +489,23 @@
                 }
               ],
               "z": 17,
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Low",
+                  "type": "Spoofing",
+                  "title": "Changing fields",
+                  "description": "I.E.: if someone is trying to send a message in name of another user by changing the ‘sender’ field during an API call.  The authenticity of messages must be trusted.",
+                  "mitigation": "Avoid"
+                }
+              ],
               "attrs": {
                 ".marker-target": {
-                  "class": "marker-target hasNoOpenThreats isInScope"
+                  "class": "marker-target hasOpenThreats isInScope"
                 },
                 ".connection": {
-                  "class": "connection hasNoOpenThreats isInScope"
+                  "class": "connection hasOpenThreats isInScope"
                 }
               }
             },
@@ -438,16 +520,16 @@
               },
               "vertices": [
                 {
-                  "x": 572,
-                  "y": 278
+                  "x": 628,
+                  "y": 264
                 }
               ],
               "id": "a00ca7ba-36c1-4bb9-b4ca-adc7884a289b",
               "labels": [
                 {
                   "position": {
-                    "distance": 0.5209448513859105,
-                    "offset": 2.45810417085886
+                    "distance": 0.622310367089943,
+                    "offset": -2.5852663926780224
                   },
                   "attrs": {
                     "text": {
@@ -614,14 +696,17 @@
               },
               "vertices": [
                 {
-                  "x": 399,
-                  "y": 494
+                  "x": 414,
+                  "y": 488
                 }
               ],
               "id": "7b2ba44d-bd03-4669-8a81-2a2bec3f4677",
               "labels": [
                 {
-                  "position": 0.5,
+                  "position": {
+                    "distance": 0.6457897662000274,
+                    "offset": 7.997533183544874
+                  },
                   "attrs": {
                     "text": {
                       "text": "Write/remove JWT",
@@ -633,6 +718,7 @@
               ],
               "z": 25,
               "hasOpenThreats": false,
+              "protocol": "?",
               "attrs": {
                 ".marker-target": {
                   "class": "marker-target hasNoOpenThreats isInScope"
@@ -675,12 +761,84 @@
               ],
               "z": 26,
               "hasOpenThreats": false,
+              "protocol": "?",
               "attrs": {
                 ".marker-target": {
                   "class": "marker-target hasNoOpenThreats isInScope"
                 },
                 ".connection": {
                   "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 781,
+                "y": 9
+              },
+              "angle": 0,
+              "id": "0d5f9632-5a30-4d2d-bfd8-1f2fab1034e3",
+              "z": 27,
+              "hasOpenThreats": false,
+              "outOfScope": true,
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isOutOfScope"
+                },
+                "text": {
+                  "text": "Cyse\nemployees"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 609,
+                "y": 12
+              },
+              "angle": 0,
+              "id": "c5ebe342-cd3b-41dc-af43-311b5370eb1a",
+              "z": 28,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Low",
+                  "title": "Randsomeware attack on VM",
+                  "description": "BLa",
+                  "type": "Denial of service",
+                  "mitigation": "Mitigate"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Malware",
+                  "type": "Denial of service",
+                  "description": "Malware infection will likely only happen through the internet, by someone somehow uploading something through the front-end or API, or it simply spreading over the internet. T",
+                  "mitigation": "Avoid/mitigate"
+                }
+              ],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "Hardware"
+                },
+                ".element-text": {
+                  "class": "element-text hasOpenThreats isInScope"
                 }
               }
             }
